@@ -1,0 +1,12 @@
+======================================================
+Catalogue scrape job started: Thu Apr  2 04:02:19 PM EDT 2026
+Node: kn001
+Output CSV: /home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/Dataset/catalogues.csv
+Checkpoint dir: /home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/Dataset/checkpoints
+======================================================
+
+[Sigma-Aldrich] Step 1: listing SIDs from PubChem …
+  Sigma-Aldrich: 258,063 substances to retrieve
+[Sigma-Aldrich] Step 2: fetching details for 258,063 SIDs …
+[Sigma-Aldrich] 256,783 SIDs have valid CID + product URL
+[Sigma-Aldrich] Step 3: fetching properties for 214,877 unique CIDs …

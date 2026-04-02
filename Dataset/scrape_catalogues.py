@@ -1,12 +1,23 @@
 #!/usr/bin/env python3
 """
 Scrape chemical catalogues (Sigma-Aldrich, Ambeed, Combi-Blocks) via PubChem
-for monoalcohols, diols, and monoamines with MW < 500, ≤1 fluorine, no sulfur.
+for monoalcohols, diols, and monoamines with MW < 500, ≤1 fluorine, no sulfur,
+no chiral centres, no phenols, and no anilines.
 
 All three vendors have substance records on PubChem (~250K each). Each SID record
 embeds a direct vendor product URL in xref.sburl — no URL construction needed.
+Price-per-gram (USD/g) is extracted from the PubChem info table where available.
 
-Output CSV columns: smiles, canonical_smiles, source, link, molecular_weight, compound_type
+Output CSV columns: smiles, canonical_smiles, source, link, molecular_weight,
+                    compound_type, price_per_gram
+
+Hard filters applied (any match → compound rejected):
+  • MW ≥ 500
+  • Contains sulfur
+  • More than 1 fluorine
+  • Any chiral centre (assigned or unassigned)
+  • Phenol / aromatic alcohol (OH on aromatic carbon)
+  • Aniline / aromatic amine (N on aromatic carbon)
 
 Usage:
     python scrape_catalogues.py --output results.csv
@@ -16,6 +27,7 @@ Usage:
 
 import argparse
 import json
+import re
 import sys
 import time
 from pathlib import Path
@@ -65,6 +77,18 @@ _AMINE = Chem.MolFromSmarts(
 
 _SULFUR = Chem.MolFromSmarts("[#16]")
 
+# OH directly on any aromatic carbon (phenol, naphthol, hetarene-OH …)
+_PHENOL = Chem.MolFromSmarts("[OX2H][c]")
+
+# Amine N directly on any aromatic carbon — same exclusions as _AMINE above
+_AROMATIC_AMINE = Chem.MolFromSmarts(
+    "[NX3;!$(NC=O);!$(NS(=O));!$([N+]);!$(N=*)][c]"
+)
+
+
+def _has_chiral_centre(mol) -> bool:
+    return bool(Chem.FindMolChiralCenters(mol, includeUnassigned=True))
+
 
 def classify(mol) -> list:
     """
@@ -76,6 +100,12 @@ def classify(mol) -> list:
     if mol.HasSubstructMatch(_SULFUR):
         return []
     if sum(a.GetAtomicNum() == 9 for a in mol.GetAtoms()) > 1:
+        return []
+    if _has_chiral_centre(mol):
+        return []
+    if mol.HasSubstructMatch(_PHENOL):
+        return []
+    if mol.HasSubstructMatch(_AROMATIC_AMINE):
         return []
     oh = len(mol.GetSubstructMatches(_ALCOHOL))
     n  = len(mol.GetSubstructMatches(_AMINE))
@@ -89,7 +119,8 @@ def classify(mol) -> list:
     return types
 
 
-def build_row(isomeric_smiles: str, source: str, sburl: str, types: list) -> dict | None:
+def build_row(isomeric_smiles: str, source: str, sburl: str, types: list,
+              price_per_gram: float | None = None) -> dict | None:
     mol = Chem.MolFromSmiles(isomeric_smiles)
     if mol is None:
         return None
@@ -101,6 +132,7 @@ def build_row(isomeric_smiles: str, source: str, sburl: str, types: list) -> dic
         "link":             sburl,
         "molecular_weight": round(Descriptors.MolWt(mol), 4),
         "compound_type":    ",".join(types),
+        "price_per_gram":   price_per_gram,
     }
 
 # ---------------------------------------------------------------------------
@@ -199,6 +231,56 @@ def esearch_sids(source_name: str, limit: int = None) -> list:
 
 _PUG = "https://pubchem.ncbi.nlm.nih.gov/rest/pug"
 
+# Patterns for extracting price-per-gram from PC_Substance info tables
+_PRICE_LABEL_RE = re.compile(r"\bpric(e|ing)\b|\bcost\b", re.IGNORECASE)
+_GRAMS_RE       = re.compile(r"([\d.]+)\s*g\b", re.IGNORECASE)
+_DOLLAR_RE      = re.compile(r"\$?\s*([\d,]+\.?\d*)")
+
+
+def _parse_price_per_gram(info_list: list) -> float | None:
+    """
+    Scan a PC_Substance info list for price entries.  Returns the cheapest
+    USD/g found, or None if no parseable price data is present.
+
+    Handles two common vendor formats:
+      • label="Price", name="25 g / USD", value={"sval": "47.50"}
+        → price_per_gram = 47.50 / 25 = 1.90
+      • label="Price", name="USD/g",       value={"fval": 2.35}
+        → price_per_gram = 2.35
+    """
+    candidates = []
+
+    for item in info_list:
+        urn   = item.get("urn", {})
+        label = urn.get("label", "")
+        if not _PRICE_LABEL_RE.search(label):
+            continue
+
+        name = urn.get("name", "")
+        val  = item.get("value", {})
+
+        # Extract numeric price
+        if "fval" in val:
+            price = float(val["fval"])
+        elif "sval" in val:
+            m = _DOLLAR_RE.search(str(val["sval"]))
+            if not m:
+                continue
+            price = float(m.group(1).replace(",", ""))
+        else:
+            continue
+
+        # Normalise to per-gram
+        m_g = _GRAMS_RE.search(name)
+        if m_g:
+            grams = float(m_g.group(1))
+            if grams > 0:
+                candidates.append(price / grams)
+        elif re.search(r"/\s*g\b|per\s*g\b", name, re.IGNORECASE):
+            candidates.append(price)
+
+    return round(min(candidates), 4) if candidates else None
+
 
 def _parse_sid_record(substance: dict) -> dict | None:
     """
@@ -229,7 +311,10 @@ def _parse_sid_record(substance: dict) -> dict | None:
     if sburl is None:
         return None  # no direct product link → skip
 
-    return {"sid": sid, "cid": cid, "sburl": sburl, "cas": cas, "regid": regid}
+    price_per_gram = _parse_price_per_gram(substance.get("info", []))
+
+    return {"sid": sid, "cid": cid, "sburl": sburl, "cas": cas, "regid": regid,
+            "price_per_gram": price_per_gram}
 
 
 def fetch_sid_details(sids: list, batch_size: int = 100) -> list:
@@ -402,7 +487,7 @@ def process_vendor(vendor_name: str, source_name: str, args) -> pd.DataFrame:
             continue
         seen_canon.add(canon)
 
-        row = build_row(smiles, vendor_name, sburl, types)
+        row = build_row(smiles, vendor_name, sburl, types, d.get("price_per_gram"))
         if row:
             rows.append(row)
 

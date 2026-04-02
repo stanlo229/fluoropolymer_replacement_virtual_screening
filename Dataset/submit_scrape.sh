@@ -1,18 +1,18 @@
 #!/bin/bash
 #SBATCH --job-name=scrape_catalogues
 #SBATCH --account=aip-aspuru
-#SBATCH --time=3:00:00
+#SBATCH --time=8:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=8G
-#SBATCH --output=./logs/scrape_%j.out
-#SBATCH --error=./logs/scrape_%j.err
+#SBATCH --output=./logs/scrape.out
+#SBATCH --error=./logs/scrape.err
 
 # ---- Environment -------------------------------------------------------
 source ~/projects/aip-aspuru/stanlo/.virtualenvs/ocsr/bin/activate
 
 # ---- Paths -------------------------------------------------------------
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="/home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/Dataset"
 OUTPUT="${SCRIPT_DIR}/catalogues.csv"
 CKPT_DIR="${SCRIPT_DIR}/checkpoints"
 
@@ -29,8 +29,7 @@ echo "======================================================"
 # Add --resume to pick up where a previous run left off if checkpoints exist
 python "${SCRIPT_DIR}/scrape_catalogues.py" \
     --output   "${OUTPUT}"   \
-    --checkpoint_dir "${CKPT_DIR}" \
-    --resume
+    --checkpoint_dir "${CKPT_DIR}"
 
 echo "======================================================"
 echo "Job finished: $(date)"
