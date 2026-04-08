@@ -29,7 +29,8 @@ echo "======================================================"
 # Add --resume to pick up where a previous run left off if checkpoints exist
 python "${SCRIPT_DIR}/scrape_catalogues.py" \
     --output   "${OUTPUT}"   \
-    --checkpoint_dir "${CKPT_DIR}"
+    --checkpoint_dir "${CKPT_DIR}" \
+    --resume
 
 echo "======================================================"
 echo "Job finished: $(date)"

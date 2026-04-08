@@ -1,23 +1,24 @@
 #!/usr/bin/env python3
 """
-Scrape chemical catalogues (Sigma-Aldrich, Ambeed, Combi-Blocks) via PubChem
-for monoalcohols, diols, and monoamines with MW < 500, ≤1 fluorine, no sulfur,
-no chiral centres, no phenols, and no anilines.
+Scrape chemical catalogues via PubChem for monoalcohols, diols, and monoamines
+with MW < 500, ≤1 fluorine, no sulfur, no chiral centres.
 
-All three vendors have substance records on PubChem (~250K each). Each SID record
-embeds a direct vendor product URL in xref.sburl — no URL construction needed.
-Price-per-gram (USD/g) is extracted from the PubChem info table where available.
+Vendors: Sigma-Aldrich, Ambeed, Combi-Blocks, TCI, Thermo Fisher Scientific,
+         Oakwood Products, Matrix Scientific.
+(Derthon is not present as a PubChem substance source.)
+
+Each SID record embeds a direct vendor product URL in xref.sburl.
+Purity (e.g. "≥97%") and price-per-gram (e.g. "$45/5g") are extracted from
+the synonyms list on a best-effort basis; many SIDs will have NaN for these.
 
 Output CSV columns: smiles, canonical_smiles, source, link, molecular_weight,
-                    compound_type, price_per_gram
+                    compound_type, purity, price_per_gram
 
 Hard filters applied (any match → compound rejected):
   • MW ≥ 500
   • Contains sulfur
   • More than 1 fluorine
   • Any chiral centre (assigned or unassigned)
-  • Phenol / aromatic alcohol (OH on aromatic carbon)
-  • Aniline / aromatic amine (N on aromatic carbon)
 
 Usage:
     python scrape_catalogues.py --output results.csv
@@ -43,22 +44,37 @@ from tqdm import tqdm
 # ---------------------------------------------------------------------------
 
 VENDORS = {
-    "Sigma-Aldrich": "Sigma-Aldrich",
-    "Ambeed":        "Ambeed",
-    "Combi-Blocks":  "Combi-Blocks",
+    "Sigma-Aldrich":           "Sigma-Aldrich",
+    "Ambeed":                  "Ambeed",
+    "Combi-Blocks":            "Combi-Blocks",
+    "TCI":                     "TCI (Tokyo Chemical Industry)",
+    "Thermo Fisher Scientific": "Thermo Fisher Scientific",
+    "Oakwood Products":        "Oakwood Products",
+    "Matrix Scientific":       "Matrix Scientific",
 }
 
 # Short aliases accepted on the command line
 VENDOR_ALIASES = {
-    "sigma":          "Sigma-Aldrich",
-    "aldrich":        "Sigma-Aldrich",
-    "sigma-aldrich":  "Sigma-Aldrich",
-    "Sigma-Aldrich":  "Sigma-Aldrich",
-    "ambeed":         "Ambeed",
-    "Ambeed":         "Ambeed",
-    "combi":          "Combi-Blocks",
-    "combi-blocks":   "Combi-Blocks",
-    "Combi-Blocks":   "Combi-Blocks",
+    "sigma":                    "Sigma-Aldrich",
+    "aldrich":                  "Sigma-Aldrich",
+    "sigma-aldrich":            "Sigma-Aldrich",
+    "Sigma-Aldrich":            "Sigma-Aldrich",
+    "ambeed":                   "Ambeed",
+    "Ambeed":                   "Ambeed",
+    "combi":                    "Combi-Blocks",
+    "combi-blocks":             "Combi-Blocks",
+    "Combi-Blocks":             "Combi-Blocks",
+    "tci":                      "TCI",
+    "TCI":                      "TCI",
+    "tokyo":                    "TCI",
+    "thermo":                   "Thermo Fisher Scientific",
+    "fisher":                   "Thermo Fisher Scientific",
+    "thermofisher":             "Thermo Fisher Scientific",
+    "Thermo Fisher Scientific": "Thermo Fisher Scientific",
+    "oakwood":                  "Oakwood Products",
+    "Oakwood Products":         "Oakwood Products",
+    "matrix":                   "Matrix Scientific",
+    "Matrix Scientific":        "Matrix Scientific",
 }
 
 # ---------------------------------------------------------------------------
@@ -77,14 +93,6 @@ _AMINE = Chem.MolFromSmarts(
 
 _SULFUR = Chem.MolFromSmarts("[#16]")
 
-# OH directly on any aromatic carbon (phenol, naphthol, hetarene-OH …)
-_PHENOL = Chem.MolFromSmarts("[OX2H][c]")
-
-# Amine N directly on any aromatic carbon — same exclusions as _AMINE above
-_AROMATIC_AMINE = Chem.MolFromSmarts(
-    "[NX3;!$(NC=O);!$(NS(=O));!$([N+]);!$(N=*)][c]"
-)
-
 
 def _has_chiral_centre(mol) -> bool:
     return bool(Chem.FindMolChiralCenters(mol, includeUnassigned=True))
@@ -95,6 +103,8 @@ def classify(mol) -> list:
     Return list of matching compound types from {'monoalcohol', 'diol', 'monoamine'},
     or empty list if the compound fails any hard filter (MW, S, F).
     """
+    if len(Chem.GetMolFrags(mol)) > 1:
+        return []
     if Descriptors.MolWt(mol) >= 500:
         return []
     if mol.HasSubstructMatch(_SULFUR):
@@ -102,10 +112,6 @@ def classify(mol) -> list:
     if sum(a.GetAtomicNum() == 9 for a in mol.GetAtoms()) > 1:
         return []
     if _has_chiral_centre(mol):
-        return []
-    if mol.HasSubstructMatch(_PHENOL):
-        return []
-    if mol.HasSubstructMatch(_AROMATIC_AMINE):
         return []
     oh = len(mol.GetSubstructMatches(_ALCOHOL))
     n  = len(mol.GetSubstructMatches(_AMINE))
@@ -120,6 +126,7 @@ def classify(mol) -> list:
 
 
 def build_row(isomeric_smiles: str, source: str, sburl: str, types: list,
+              purity: float | None = None,
               price_per_gram: float | None = None) -> dict | None:
     mol = Chem.MolFromSmiles(isomeric_smiles)
     if mol is None:
@@ -132,6 +139,7 @@ def build_row(isomeric_smiles: str, source: str, sburl: str, types: list,
         "link":             sburl,
         "molecular_weight": round(Descriptors.MolWt(mol), 4),
         "compound_type":    ",".join(types),
+        "purity":           purity,
         "price_per_gram":   price_per_gram,
     }
 
@@ -231,55 +239,69 @@ def esearch_sids(source_name: str, limit: int = None) -> list:
 
 _PUG = "https://pubchem.ncbi.nlm.nih.gov/rest/pug"
 
-# Patterns for extracting price-per-gram from PC_Substance info tables
-_PRICE_LABEL_RE = re.compile(r"\bpric(e|ing)\b|\bcost\b", re.IGNORECASE)
-_GRAMS_RE       = re.compile(r"([\d.]+)\s*g\b", re.IGNORECASE)
-_DOLLAR_RE      = re.compile(r"\$?\s*([\d,]+\.?\d*)")
+# ---- Purity extraction from synonyms ----
+# Matches: ≥97%, >=98.5%, >99%, 97+%, 97% min, 95% pure, purity: 97%
+_PURITY_RE = re.compile(
+    r'(?:>=|≥|>|≧)\s*(\d{2,3}(?:\.\d+)?)\s*%'
+    r'|(\d{2,3}(?:\.\d+)?)\+\s*%'
+    r'|(\d{2,3}(?:\.\d+)?)\s*%\s*(?:min\.?|pure|purity)'
+    r'|purity[:\s]+(\d{2,3}(?:\.\d+)?)\s*%',
+    re.IGNORECASE,
+)
+
+# ---- Price-per-gram extraction from synonyms ----
+# Matches: $45.00 / 5 g, USD 12.50/1g, 47.50 USD / 25 g, 9.90/g
+_PRICE_RE = re.compile(
+    r'(?:USD|\$)\s*([\d,]+\.?\d*)\s*/\s*([\d.]+)\s*(g|kg|mg)'
+    r'|([\d,]+\.?\d*)\s*(?:USD|\$)\s*/\s*([\d.]+)\s*(g|kg|mg)'
+    r'|(?:USD|\$)\s*([\d,]+\.?\d*)\s*/\s*g\b',
+    re.IGNORECASE,
+)
+
+_MASS_SCALE = {"mg": 0.001, "g": 1.0, "kg": 1000.0}
 
 
-def _parse_price_per_gram(info_list: list) -> float | None:
+def _parse_purity_and_price(synonyms: list) -> tuple:
     """
-    Scan a PC_Substance info list for price entries.  Returns the cheapest
-    USD/g found, or None if no parseable price data is present.
-
-    Handles two common vendor formats:
-      • label="Price", name="25 g / USD", value={"sval": "47.50"}
-        → price_per_gram = 47.50 / 25 = 1.90
-      • label="Price", name="USD/g",       value={"fval": 2.35}
-        → price_per_gram = 2.35
+    Scan the synonyms list for purity (%) and price-per-gram (USD/g).
+    Returns (purity_float_or_None, price_per_gram_float_or_None).
+    Takes the first purity found and the cheapest price found.
     """
-    candidates = []
+    purity = None
+    price_candidates = []
 
-    for item in info_list:
-        urn   = item.get("urn", {})
-        label = urn.get("label", "")
-        if not _PRICE_LABEL_RE.search(label):
-            continue
+    for syn in synonyms:
+        s = str(syn)
 
-        name = urn.get("name", "")
-        val  = item.get("value", {})
+        # Purity
+        if purity is None:
+            m = _PURITY_RE.search(s)
+            if m:
+                val = next(g for g in m.groups() if g is not None)
+                purity = float(val)
 
-        # Extract numeric price
-        if "fval" in val:
-            price = float(val["fval"])
-        elif "sval" in val:
-            m = _DOLLAR_RE.search(str(val["sval"]))
-            if not m:
-                continue
-            price = float(m.group(1).replace(",", ""))
-        else:
-            continue
+        # Price per gram
+        m = _PRICE_RE.search(s)
+        if m:
+            g = m.groups()
+            # pattern 1: USD price / qty unit
+            if g[0] and g[1] and g[2]:
+                price = float(g[0].replace(",", ""))
+                qty   = float(g[1]) * _MASS_SCALE.get(g[2].lower(), 1.0)
+                if qty > 0:
+                    price_candidates.append(price / qty)
+            # pattern 2: qty unit / USD price
+            elif g[3] and g[4] and g[5]:
+                price = float(g[3].replace(",", ""))
+                qty   = float(g[4]) * _MASS_SCALE.get(g[5].lower(), 1.0)
+                if qty > 0:
+                    price_candidates.append(price / qty)
+            # pattern 3: USD price / g (no explicit quantity)
+            elif g[6]:
+                price_candidates.append(float(g[6].replace(",", "")))
 
-        # Normalise to per-gram
-        m_g = _GRAMS_RE.search(name)
-        if m_g:
-            grams = float(m_g.group(1))
-            if grams > 0:
-                candidates.append(price / grams)
-        elif re.search(r"/\s*g\b|per\s*g\b", name, re.IGNORECASE):
-            candidates.append(price)
-
-    return round(min(candidates), 4) if candidates else None
+    price_per_gram = round(min(price_candidates), 4) if price_candidates else None
+    return purity, price_per_gram
 
 
 def _parse_sid_record(substance: dict) -> dict | None:
@@ -311,10 +333,11 @@ def _parse_sid_record(substance: dict) -> dict | None:
     if sburl is None:
         return None  # no direct product link → skip
 
-    price_per_gram = _parse_price_per_gram(substance.get("info", []))
+    synonyms = substance.get("synonyms", [])
+    purity, price_per_gram = _parse_purity_and_price(synonyms)
 
     return {"sid": sid, "cid": cid, "sburl": sburl, "cas": cas, "regid": regid,
-            "price_per_gram": price_per_gram}
+            "purity": purity, "price_per_gram": price_per_gram}
 
 
 def fetch_sid_details(sids: list, batch_size: int = 100) -> list:
@@ -487,7 +510,8 @@ def process_vendor(vendor_name: str, source_name: str, args) -> pd.DataFrame:
             continue
         seen_canon.add(canon)
 
-        row = build_row(smiles, vendor_name, sburl, types, d.get("price_per_gram"))
+        row = build_row(smiles, vendor_name, sburl, types,
+                        d.get("purity"), d.get("price_per_gram"))
         if row:
             rows.append(row)
 
@@ -513,9 +537,10 @@ def main():
         "--vendors", nargs="+", default=list(VENDORS.keys()),
         metavar="VENDOR",
         help=(
-            "Vendors to query (default: all three). "
-            "Accepted: sigma, aldrich, Sigma-Aldrich, ambeed, Ambeed, "
-            "combi, combi-blocks, Combi-Blocks"
+            "Vendors to query (default: all). "
+            "Accepted aliases: sigma/aldrich, ambeed, combi, tci/tokyo, "
+            "thermo/fisher, oakwood, matrix. "
+            "Note: Derthon is not a PubChem substance source."
         ),
     )
     parser.add_argument(
@@ -557,7 +582,21 @@ def main():
         print("No results found.", flush=True)
         return
 
+    _VENDOR_PRIORITY = {
+        "Sigma-Aldrich": 0,
+        "Ambeed": 1,
+        "Thermo Fisher Scientific": 2,
+        "TCI": 3,
+        "Combi-Blocks": 4,
+        "Oakwood Products": 5,
+        "Matrix Scientific": 6,
+    }
     combined = pd.concat(all_dfs, ignore_index=True)
+    combined["_priority"] = combined["source"].map(_VENDOR_PRIORITY).fillna(99).astype(int)
+    combined.sort_values("_priority", inplace=True)
+    combined.drop_duplicates(subset="canonical_smiles", keep="first", inplace=True)
+    combined.drop(columns=["_priority"], inplace=True)
+    combined.reset_index(drop=True, inplace=True)
     combined.to_csv(args.output, index=False)
     print(f"\nSaved {len(combined):,} compounds to {args.output}", flush=True)
     print("\nBreakdown by compound_type:")
