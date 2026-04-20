@@ -1,0 +1,216 @@
+Lmod Warning:
+-------------------------------------------------------------------------------
+The following dependent module(s) are not currently loaded: scipy-stack/2024a
+(required by: rdkit/2024.03.5)
+-------------------------------------------------------------------------------
+
+
+
+
+The following have been reloaded with a version change:
+  1) ipykernel/2024a => ipykernel/2026a
+  2) scipy-stack/2024a => scipy-stack/2026a
+
+
+The following have been reloaded with a version change:
+  1) ipykernel/2026a => ipykernel/2024a
+  2) scipy-stack/2026a => scipy-stack/2024a
+
+12:57:03 INFO run_pipeline: === Step 1: Generating monomers ===
+12:57:05 INFO generate_monomers: Loaded 89622 compounds from ../dataset/catalogues.csv
+[12:57:05] Explicit valence for atom # 13 O, 3, is greater than permitted
+[12:57:05] Explicit valence for atom # 16 O, 3, is greater than permitted
+[12:57:06] Conflicting single bond directions around double bond at index 10.
+[12:57:06]   BondStereo set to STEREONONE and single bond directions set to NONE.
+[12:57:47] Explicit valence for atom # 13 N, 4, is greater than permitted
+[12:57:47] Explicit valence for atom # 34 O, 3, is greater than permitted
+[12:57:47] Explicit valence for atom # 13 O, 3, is greater than permitted
+[12:57:47] Explicit valence for atom # 14 N, 4, is greater than permitted
+[12:57:47] Explicit valence for atom # 19 O, 3, is greater than permitted
+[12:57:47] Explicit valence for atom # 20 N, 4, is greater than permitted
+[12:57:47] Explicit valence for atom # 21 N, 4, is greater than permitted
+[12:57:47] Explicit valence for atom # 14 N, 4, is greater than permitted
+[12:57:47] Explicit valence for atom # 14 N, 4, is greater than permitted
+[12:57:47] Explicit valence for atom # 20 N, 4, is greater than permitted
+[12:57:47] Explicit valence for atom # 23 O, 3, is greater than permitted
+[12:57:47] Explicit valence for atom # 18 N, 4, is greater than permitted
+[12:57:47] Explicit valence for atom # 30 O, 3, is greater than permitted
+[12:57:47] Explicit valence for atom # 20 N, 4, is greater than permitted
+[12:57:47] Explicit valence for atom # 26 N, 4, is greater than permitted
+[12:57:47] Explicit valence for atom # 20 O, 3, is greater than permitted
+[12:57:47] Explicit valence for atom # 22 O, 3, is greater than permitted
+[12:57:47] Explicit valence for atom # 13 N, 4, is greater than permitted
+[12:57:48] Explicit valence for atom # 14 N, 4, is greater than permitted
+[12:57:48] Explicit valence for atom # 15 N, 4, is greater than permitted
+[12:57:48] Explicit valence for atom # 20 N, 4, is greater than permitted
+[12:57:48] Explicit valence for atom # 25 N, 4, is greater than permitted
+[12:57:48] Explicit valence for atom # 14 N, 4, is greater than permitted
+[12:57:48] Explicit valence for atom # 22 N, 4, is greater than permitted
+[12:57:48] Explicit valence for atom # 20 N, 4, is greater than permitted
+[12:57:48] Explicit valence for atom # 18 N, 4, is greater than permitted
+[12:57:48] Explicit valence for atom # 16 N, 4, is greater than permitted
+[12:57:48] Explicit valence for atom # 24 O, 3, is greater than permitted
+[12:57:48] Explicit valence for atom # 26 N, 4, is greater than permitted
+[12:57:48] Explicit valence for atom # 17 N, 4, is greater than permitted
+[12:57:48] Explicit valence for atom # 14 N, 4, is greater than permitted
+[12:57:48] Explicit valence for atom # 13 N, 4, is greater than permitted
+[12:57:48] Explicit valence for atom # 19 N, 4, is greater than permitted
+[12:57:48] Explicit valence for atom # 25 O, 3, is greater than permitted
+[12:57:48] Explicit valence for atom # 40 O, 3, is greater than permitted
+[12:57:48] Explicit valence for atom # 23 O, 3, is greater than permitted
+[12:57:48] Explicit valence for atom # 19 O, 3, is greater than permitted
+[12:57:48] Explicit valence for atom # 22 O, 3, is greater than permitted
+[12:57:48] Explicit valence for atom # 20 O, 3, is greater than permitted
+[12:57:48] Explicit valence for atom # 23 O, 3, is greater than permitted
+[12:57:48] Explicit valence for atom # 13 O, 3, is greater than permitted
+[12:57:48] Explicit valence for atom # 13 O, 3, is greater than permitted
+[12:57:48] Explicit valence for atom # 13 O, 3, is greater than permitted
+[12:57:48] Explicit valence for atom # 13 O, 3, is greater than permitted
+[12:57:48] Explicit valence for atom # 37 O, 3, is greater than permitted
+[12:57:48] Explicit valence for atom # 20 O, 3, is greater than permitted
+[12:57:48] Explicit valence for atom # 13 O, 3, is greater than permitted
+[12:57:48] Explicit valence for atom # 13 O, 3, is greater than permitted
+[12:57:48] Explicit valence for atom # 24 O, 3, is greater than permitted
+[12:57:48] Explicit valence for atom # 15 N, 4, is greater than permitted
+[12:57:48] Explicit valence for atom # 13 N, 4, is greater than permitted
+[12:57:48] Explicit valence for atom # 14 N, 4, is greater than permitted
+[12:57:48] Explicit valence for atom # 13 O, 3, is greater than permitted
+[12:57:48] Explicit valence for atom # 15 O, 3, is greater than permitted
+[12:57:48] Explicit valence for atom # 18 N, 4, is greater than permitted
+[12:57:48] Explicit valence for atom # 15 N, 4, is greater than permitted
+[12:57:48] Explicit valence for atom # 15 N, 4, is greater than permitted
+[12:57:48] Explicit valence for atom # 18 N, 4, is greater than permitted
+[12:57:48] Explicit valence for atom # 14 N, 4, is greater than permitted
+[12:57:48] Explicit valence for atom # 14 N, 4, is greater than permitted
+[12:57:48] Explicit valence for atom # 19 N, 4, is greater than permitted
+[12:57:48] Explicit valence for atom # 19 O, 3, is greater than permitted
+[12:57:48] Explicit valence for atom # 14 O, 3, is greater than permitted
+[12:57:48] Explicit valence for atom # 17 O, 3, is greater than permitted
+[12:57:48] Explicit valence for atom # 13 N, 4, is greater than permitted
+[12:57:48] Explicit valence for atom # 13 N, 4, is greater than permitted
+[12:57:48] Explicit valence for atom # 14 N, 4, is greater than permitted
+[12:57:48] Explicit valence for atom # 18 O, 3, is greater than permitted
+[12:57:48] Explicit valence for atom # 23 O, 3, is greater than permitted
+[12:57:48] Explicit valence for atom # 24 O, 3, is greater than permitted
+[12:57:48] Explicit valence for atom # 18 O, 3, is greater than permitted
+[12:57:48] Explicit valence for atom # 18 N, 4, is greater than permitted
+[12:57:48] Explicit valence for atom # 21 O, 3, is greater than permitted
+[12:57:48] Explicit valence for atom # 26 O, 3, is greater than permitted
+[12:57:48] Explicit valence for atom # 19 N, 4, is greater than permitted
+[12:57:48] Explicit valence for atom # 19 N, 4, is greater than permitted
+[12:57:48] Explicit valence for atom # 20 N, 4, is greater than permitted
+[12:57:48] Explicit valence for atom # 30 O, 3, is greater than permitted
+[12:57:48] Explicit valence for atom # 14 N, 4, is greater than permitted
+[12:57:48] Explicit valence for atom # 14 O, 3, is greater than permitted
+[12:57:48] Explicit valence for atom # 22 N, 4, is greater than permitted
+[12:57:48] Explicit valence for atom # 24 O, 3, is greater than permitted
+[12:57:49] Explicit valence for atom # 24 O, 3, is greater than permitted
+[12:57:49] Explicit valence for atom # 19 N, 4, is greater than permitted
+[12:57:50] Explicit valence for atom # 13 N, 4, is greater than permitted
+[12:57:50] Explicit valence for atom # 20 O, 3, is greater than permitted
+[12:57:50] Explicit valence for atom # 13 O, 3, is greater than permitted
+[12:57:50] Explicit valence for atom # 21 O, 3, is greater than permitted
+[12:57:50] Explicit valence for atom # 13 O, 3, is greater than permitted
+[12:57:50] Explicit valence for atom # 13 N, 4, is greater than permitted
+[12:57:50] Explicit valence for atom # 13 N, 4, is greater than permitted
+[12:57:50] Explicit valence for atom # 24 N, 4, is greater than permitted
+[12:57:50] Explicit valence for atom # 16 N, 4, is greater than permitted
+[12:57:50] Explicit valence for atom # 16 N, 4, is greater than permitted
+[12:57:51] Explicit valence for atom # 25 O, 3, is greater than permitted
+[12:57:51] Explicit valence for atom # 18 O, 3, is greater than permitted
+[12:57:51] Explicit valence for atom # 20 O, 3, is greater than permitted
+[12:57:51] Explicit valence for atom # 19 N, 4, is greater than permitted
+[12:57:51] Explicit valence for atom # 18 N, 4, is greater than permitted
+[12:57:51] Explicit valence for atom # 30 O, 3, is greater than permitted
+[12:57:51] Explicit valence for atom # 19 N, 4, is greater than permitted
+[12:57:51] Explicit valence for atom # 18 N, 4, is greater than permitted
+[12:57:51] Explicit valence for atom # 18 N, 4, is greater than permitted
+[12:57:51] Explicit valence for atom # 22 O, 3, is greater than permitted
+[12:57:51] Explicit valence for atom # 16 N, 4, is greater than permitted
+[12:57:51] Explicit valence for atom # 27 N, 4, is greater than permitted
+[12:57:51] Explicit valence for atom # 18 N, 4, is greater than permitted
+[12:57:51] Explicit valence for atom # 14 N, 4, is greater than permitted
+[12:57:51] Explicit valence for atom # 26 N, 4, is greater than permitted
+[12:57:51] Explicit valence for atom # 13 O, 3, is greater than permitted
+[12:57:51] Explicit valence for atom # 19 O, 3, is greater than permitted
+[12:57:51] Explicit valence for atom # 24 O, 3, is greater than permitted
+[12:57:51] Explicit valence for atom # 16 N, 4, is greater than permitted
+[12:57:51] Explicit valence for atom # 25 O, 3, is greater than permitted
+[12:57:51] Explicit valence for atom # 20 O, 3, is greater than permitted
+[12:57:51] Explicit valence for atom # 19 O, 3, is greater than permitted
+[12:57:51] Explicit valence for atom # 23 O, 3, is greater than permitted
+[12:57:51] Explicit valence for atom # 28 O, 3, is greater than permitted
+[12:57:51] Explicit valence for atom # 42 O, 3, is greater than permitted
+[12:57:51] Explicit valence for atom # 32 O, 3, is greater than permitted
+[12:57:51] Explicit valence for atom # 13 O, 3, is greater than permitted
+[12:57:51] Explicit valence for atom # 13 O, 3, is greater than permitted
+[12:57:51] Explicit valence for atom # 16 O, 3, is greater than permitted
+[12:57:51] Explicit valence for atom # 13 N, 4, is greater than permitted
+[12:57:52] Explicit valence for atom # 13 N, 4, is greater than permitted
+[12:57:52] Explicit valence for atom # 25 O, 3, is greater than permitted
+[12:57:52] Explicit valence for atom # 16 O, 3, is greater than permitted
+[12:57:52] Explicit valence for atom # 16 N, 4, is greater than permitted
+[12:57:52] Explicit valence for atom # 16 N, 4, is greater than permitted
+[12:57:52] Explicit valence for atom # 13 O, 3, is greater than permitted
+[12:57:52] Explicit valence for atom # 21 N, 4, is greater than permitted
+[12:57:52] Explicit valence for atom # 21 O, 3, is greater than permitted
+[12:57:52] Explicit valence for atom # 22 O, 3, is greater than permitted
+[12:57:52] Explicit valence for atom # 19 N, 4, is greater than permitted
+[12:57:52] Explicit valence for atom # 24 O, 3, is greater than permitted
+[12:57:52] Explicit valence for atom # 13 O, 3, is greater than permitted
+[12:57:52] Explicit valence for atom # 13 O, 3, is greater than permitted
+[12:57:53] Explicit valence for atom # 25 O, 3, is greater than permitted
+12:59:17 INFO generate_monomers: Generated 79314 difunctional monomers (32360 diester, 46954 diamide, 307 with Si). Skipped 13555. Written to results/monomers.csv
+12:59:17 INFO run_pipeline:   generate_monomers done in 133.4 s
+12:59:17 INFO run_pipeline: === Step 2: Computing HSP (Stefanis–Panayiotou) ===
+HSP chunks:   0%|          | 0/16 [00:00<?, ?chunk/s][12:59:18] Conflicting single bond directions around double bond at index 9.
+[12:59:18]   BondStereo set to STEREONONE and single bond directions set to NONE.
+[12:59:18] Conflicting single bond directions around double bond at index 15.
+[12:59:18]   BondStereo set to STEREONONE and single bond directions set to NONE.
+HSP chunks:   6%|▋         | 1/16 [00:12<03:11, 12.80s/chunk]HSP chunks:  12%|█▎        | 2/16 [00:27<03:12, 13.76s/chunk]HSP chunks:  19%|█▉        | 3/16 [00:40<02:57, 13.66s/chunk]HSP chunks:  25%|██▌       | 4/16 [00:54<02:42, 13.50s/chunk]HSP chunks:  31%|███▏      | 5/16 [01:04<02:16, 12.44s/chunk]HSP chunks:  38%|███▊      | 6/16 [01:15<01:58, 11.86s/chunk]HSP chunks:  44%|████▍     | 7/16 [01:25<01:42, 11.44s/chunk]HSP chunks:  50%|█████     | 8/16 [01:36<01:29, 11.14s/chunk]HSP chunks:  56%|█████▋    | 9/16 [01:47<01:18, 11.19s/chunk]HSP chunks:  62%|██████▎   | 10/16 [01:59<01:07, 11.28s/chunk]HSP chunks:  69%|██████▉   | 11/16 [02:10<00:56, 11.22s/chunk]HSP chunks:  75%|███████▌  | 12/16 [02:21<00:44, 11.19s/chunk]HSP chunks:  81%|████████▏ | 13/16 [02:32<00:33, 11.26s/chunk]HSP chunks:  88%|████████▊ | 14/16 [02:44<00:22, 11.36s/chunk]HSP chunks:  94%|█████████▍| 15/16 [02:56<00:11, 11.47s/chunk]HSP chunks: 100%|██████████| 16/16 [03:06<00:00, 11.15s/chunk]HSP chunks: 100%|██████████| 16/16 [03:06<00:00, 11.66s/chunk]
+13:02:24 INFO run_pipeline:   HSP computed: 79314 OK, 0 errors
+13:02:24 INFO run_pipeline:   hsp_calculator done in 187.2 s
+13:02:24 INFO run_pipeline: === Step 3: Si correction ===
+13:02:24 INFO si_correction: Si correction: ΔδD/Si=-0.192  ΔδP/Si=-4.019  ΔδH/Si=-3.308  MAR=2.612 MPa^0.5
+13:02:24 INFO si_correction: Calibration saved to results/si_correction_calibration.json
+13:02:24 INFO run_pipeline:   Correction per Si atom: ΔδD=-0.192  ΔδP=-4.019  ΔδH=-3.308  MAR=2.612 MPa^0.5
+13:02:24 INFO si_correction: Applied Si correction to 307 monomers
+13:02:25 INFO run_pipeline:   si_correction done in 0.8 s
+13:02:25 INFO run_pipeline: === Step 4: Visualization ===
+13:02:27 INFO visualize_hsp: Plot saved to results/hsp_hansen_space.png
+13:02:28 INFO visualize_hsp: Ra-ranked CSV saved to results/hsp_Ra_ranked.csv  (top 5 Ra=2.78–3.43 MPa^0.5)
+13:02:28 INFO run_pipeline:   visualize_hsp done in 3.7 s
+13:02:28 INFO run_pipeline: === Pipeline complete in 325.1 s ===
+13:02:28 INFO run_pipeline: Outputs in results:
+13:02:28 INFO run_pipeline:   hsp_Ra_ranked.csv
+13:02:28 INFO run_pipeline:   hsp_hansen_space.png
+13:02:28 INFO run_pipeline:   hsp_hansen_space_density.png
+13:02:28 INFO run_pipeline:   hsp_hansen_space_interactive.html
+13:02:28 INFO run_pipeline:   monomers.csv
+13:02:28 INFO run_pipeline:   monomers_hsp.csv
+13:02:28 INFO run_pipeline:   monomers_hsp_corrected.csv
+13:02:28 INFO run_pipeline:   monomers_hsp_solvent_Ra.csv
+13:02:28 INFO run_pipeline:   si_correction_calibration.json
+13:02:28 INFO run_pipeline:   skipped.csv
+13:02:28 INFO run_pipeline:   top50_diiodomethane.csv
+13:02:28 INFO run_pipeline:   top50_diiodomethane_grid.png
+13:02:28 INFO run_pipeline:   top50_max_dispersion.csv
+13:02:28 INFO run_pipeline:   top50_max_dispersion_grid.png
+13:02:28 INFO run_pipeline:   top50_max_hbonding.csv
+13:02:28 INFO run_pipeline:   top50_max_hbonding_grid.png
+13:02:28 INFO run_pipeline:   top50_max_polar.csv
+13:02:28 INFO run_pipeline:   top50_max_polar_grid.png
+13:02:28 INFO run_pipeline:   top50_nhexadecane.csv
+13:02:28 INFO run_pipeline:   top50_nhexadecane_grid.png
+13:02:28 INFO run_pipeline:   top50_ptfe.csv
+13:02:28 INFO run_pipeline:   top50_ptfe_grid.png
+13:02:28 INFO run_pipeline:   top50_water.csv
+13:02:28 INFO run_pipeline:   top50_water_grid.png
+[13:02:30] Conflicting single bond directions around double bond at index 9.
+[13:02:30]   BondStereo set to STEREONONE and single bond directions set to NONE.
+[13:02:30] Conflicting single bond directions around double bond at index 15.
+[13:02:30]   BondStereo set to STEREONONE and single bond directions set to NONE.
+[13:03:29] Conflicting single bond directions around double bond at index 9.
+[13:03:29]   BondStereo set to STEREONONE and single bond directions set to NONE.
+[13:03:29] Conflicting single bond directions around double bond at index 15.
+[13:03:29]   BondStereo set to STEREONONE and single bond directions set to NONE.

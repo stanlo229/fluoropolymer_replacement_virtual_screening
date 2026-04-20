@@ -1,0 +1,54 @@
+======================================================
+Catalogue scrape job started: Thu Apr 16 07:54:23 PM EDT 2026
+Node: kn039
+Output CSV: /home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/dataset/catalogues.csv
+Checkpoint dir: /home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/dataset/checkpoints
+======================================================
+[Sigma-Aldrich] Resuming: loading SID details from /home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/dataset/checkpoints/Sigma-Aldrich_sids.json
+[Sigma-Aldrich] Resuming: loading properties from /home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/dataset/checkpoints/Sigma-Aldrich_props.csv
+[Sigma-Aldrich] Applying RDKit filters …
+[Sigma-Aldrich] → 29,472 compounds passed all filters
+[Ambeed] Resuming: loading SID details from /home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/dataset/checkpoints/Ambeed_sids.json
+[Ambeed] Resuming: loading properties from /home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/dataset/checkpoints/Ambeed_props.csv
+[Ambeed] Applying RDKit filters …
+[Ambeed] → 39,289 compounds passed all filters
+[Combi-Blocks] Resuming: loading SID details from /home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/dataset/checkpoints/Combi-Blocks_sids.json
+[Combi-Blocks] Resuming: loading properties from /home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/dataset/checkpoints/Combi-Blocks_props.csv
+[Combi-Blocks] Applying RDKit filters …
+[Combi-Blocks] → 41,912 compounds passed all filters
+[TCI] Resuming: loading SID details from /home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/dataset/checkpoints/TCI_sids.json
+[TCI] Resuming: loading properties from /home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/dataset/checkpoints/TCI_props.csv
+[TCI] Applying RDKit filters …
+[TCI] → 4,457 compounds passed all filters
+[Thermo Fisher Scientific] Resuming: loading SID details from /home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/dataset/checkpoints/Thermo_Fisher_Scientific_sids.json
+[Thermo Fisher Scientific] Resuming: loading properties from /home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/dataset/checkpoints/Thermo_Fisher_Scientific_props.csv
+[Thermo Fisher Scientific] Applying RDKit filters …
+[Thermo Fisher Scientific] → 2,894 compounds passed all filters
+[Oakwood Products] Resuming: loading SID details from /home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/dataset/checkpoints/Oakwood_Products_sids.json
+[Oakwood Products] Resuming: loading properties from /home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/dataset/checkpoints/Oakwood_Products_props.csv
+[Oakwood Products] Applying RDKit filters …
+[Oakwood Products] → 22,959 compounds passed all filters
+[Matrix Scientific] Resuming: loading SID details from /home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/dataset/checkpoints/Matrix_Scientific_sids.json
+[Matrix Scientific] Resuming: loading properties from /home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/dataset/checkpoints/Matrix_Scientific_props.csv
+[Matrix Scientific] Applying RDKit filters …
+[Matrix Scientific] → 2,454 compounds passed all filters
+
+Saved 89,622 compounds to /home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/dataset/catalogues.csv
+
+Breakdown by compound_type:
+  diol: 3,584
+  monoalcohol: 28,838
+  monoamine: 62,171
+
+Breakdown by source:
+source
+Ambeed                      33099
+Sigma-Aldrich               29472
+Combi-Blocks                16368
+Oakwood Products             8700
+Matrix Scientific            1491
+TCI                           299
+Thermo Fisher Scientific      193
+======================================================
+Job finished: Thu Apr 16 07:59:03 PM EDT 2026
+======================================================

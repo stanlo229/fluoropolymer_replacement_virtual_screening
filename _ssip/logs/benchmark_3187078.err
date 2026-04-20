@@ -1,0 +1,36 @@
+
+The following have been reloaded with a version change:
+  1) ipykernel/2026a => ipykernel/2024a
+  2) scipy-stack/2026a => scipy-stack/2024a
+
+Traceback (most recent call last):
+  File "/home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/_code/charge_predict.py", line 88, in load_aimnet2
+    model = torch.hub.load(
+            ^^^^^^^^^^^^^^^
+  File "/home/stanlo/.local/lib/python3.11/site-packages/torch/hub.py", line 652, in load
+    model = _load_local(repo_or_dir, model, *args, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/stanlo/.local/lib/python3.11/site-packages/torch/hub.py", line 682, in _load_local
+    hub_module = _import_module(MODULE_HUBCONF, hubconf_path)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/stanlo/.local/lib/python3.11/site-packages/torch/hub.py", line 115, in _import_module
+    spec.loader.exec_module(module)
+  File "<frozen importlib._bootstrap_external>", line 936, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1073, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1130, in get_data
+FileNotFoundError: [Errno 2] No such file or directory: '/home/stanlo/.cache/torch/hub/isayevlab_AIMNet2_main/hubconf.py'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/_code/run_pipeline.py", line 316, in <module>
+    main()
+  File "/home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/_code/run_pipeline.py", line 308, in main
+    stage_fns[stage](args, workdir)
+  File "/home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/_code/run_pipeline.py", line 117, in stage_charges
+    model, route = cp.load_aimnet2(args.device)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/_code/charge_predict.py", line 95, in load_aimnet2
+    raise RuntimeError(
+RuntimeError: Could not load AIMNet2 model. Install via: pip install aimnet2calc
+  ([Errno 2] No such file or directory: '/home/stanlo/.cache/torch/hub/isayevlab_AIMNet2_main/hubconf.py')

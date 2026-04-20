@@ -1,0 +1,88 @@
+============================================================
+SSIP benchmark started: Thu Apr 16 01:13:27 AM EDT 2026
+Node:    kn081
+GPU:     NVIDIA L40S
+Workdir: /home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/runs/benchmark_01
+============================================================
+Wrote 15 benchmark molecules to /home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/runs/benchmark_01/library.csv
+Running stages: ['geom', 'charges', 'surfaces', 'calibrate', 'footprint']
+Working directory: /scratch/stanlo/Repos/fluoropolymer_replacement_virtual_screening/runs/benchmark_01
+
+[geom] Optimising 15 molecules with MACE-OFF23 …
+[geom] Converged: 15/15  Errors: 0
+  [geom] completed in 1.6s
+
+[charges] Predicting AIMNet2 charges for 15 molecules …
+Found model file: /scratch/stanlo/Repos/aimnet2calc/aimnet2calc/assets/aimnet2/aimnet2_wb97m_0.jpt
+[charges] Done. Errors: 0
+  [charges] completed in 9.3s
+
+[surfaces] Computing MEPS for 15 molecules …
+[surfaces] Done. 0 molecules processed.
+  [surfaces] completed in 0.0s
+
+[calibrate] Skipping — /home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/runs/benchmark_01/calibration.json exists
+  [calibrate] completed in 0.1s
+
+[footprint] Footprinting 15 molecules …
+[footprint] Saved 15 rows → /home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/runs/benchmark_01/ssip_results.csv
+  α_max range: 0.00 – 3.10
+  β_max range: 0.00 – 3.26
+  [footprint] completed in 1.2s
+
+Pipeline complete.
+Final results: /home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/runs/benchmark_01/ssip_results.csv
+============================================================
+Pipeline finished: Thu Apr 16 01:13:41 AM EDT 2026  (exit 0)
+
+--- Benchmark analysis ---
+
+==========================================================================================
+SSIP BENCHMARK — Per-molecule predictions vs. expected (Hunter scale)
+==========================================================================================
+mol_id                    α_pred   α_exp  α_ok   β_pred   β_exp  β_ok  note
+------------------------------------------------------------------------------------------
+  bench_hexane             0.000  0.000  PASS    0.000  0.000  PASS   alkane baseline
+  bench_octane             0.000  0.000  PASS    0.000  0.000  PASS   alkane baseline
+  bench_hexadecane         0.000  0.000  PASS    0.000  0.000  PASS   alkane baseline
+  bench_methanol           2.273  2.120  PASS    2.999  2.190  FAIL   Hunter calibration reference
+  bench_butanol            2.103  2.120  PASS    3.044  2.400  FAIL   aliphatic alcohol
+  bench_octanol            1.980  2.120  PASS    3.070  2.400  FAIL   aliphatic alcohol — chain-length insensitive
+  bench_acetic_acid        2.372  2.000  PASS    3.220  1.800  FAIL   carboxylic acid donor + carbonyl acceptor
+  bench_hexanoic_acid      2.287  2.000  PASS    3.263  1.700  FAIL   carboxylic acid — chain-length insensitive
+  bench_pfhexane           0.000  0.000  PASS    0.000  0.000  PASS   perfluoroalkane — C-F is not H-bond acceptor
+  bench_pfoctane           0.000  0.000  PASS    0.000  0.000  PASS   perfluoroalkane — C-F is not H-bond acceptor
+  bench_pfba               2.996  2.000  FAIL    2.237    NaN   —     COOH donor preserved; β < acetic acid
+  bench_pfoa               2.998  2.000  FAIL    2.245    NaN   —     COOH donor preserved; β < hexanoic acid
+  bench_pfbs               3.101    NaN   —      2.308  0.000  FAIL   sulfonic acid — stronger donor than PFBA; β≈0
+  bench_pfos               3.080    NaN   —      2.186  0.000  FAIL   sulfonic acid — stronger donor than PFBA; β≈0
+  bench_genx               2.994  2.000  FAIL    2.071    NaN   —     COOH donor; β slightly > PFOA (ether O)
+------------------------------------------------------------------------------------------
+
+==========================================================================================
+SSIP BENCHMARK — Relational checks
+==========================================================================================
+  Test                           Condition                                     Result  Detail
+------------------------------------------------------------------------------------------
+  COOH donor parity              bench_pfba α ≈ bench_acetic_acid α             FAIL  |2.996 - 2.372| = 0.624, tol=0.50
+  CF2 β suppression (C4)         bench_pfba β < bench_acetic_acid β             PASS  2.237 < 3.220
+  CF2 β suppression (C8)         bench_pfoa β < bench_hexanoic_acid β           PASS  2.245 < 3.263
+  Sulfonic > carboxylic α        bench_pfbs α > bench_pfba α                    PASS  3.101 > 2.996
+  GenX ether β > PFOA β          bench_genx β > bench_pfoa β                    FAIL  2.071 > 2.245
+  Alkane chain-length (alpha_max) max−min across hexane/octane/hexadecane < 0.10  PASS  spread = 0.000
+  Alkane chain-length (beta_max) max−min across hexane/octane/hexadecane < 0.10  PASS  spread = 0.000
+  PFalkane chain-length (alpha_max) |pfhexane − pfoctane| < 0.10                   PASS  spread = 0.000
+  PFalkane chain-length (beta_max) |pfhexane − pfoctane| < 0.10                   PASS  spread = 0.000
+------------------------------------------------------------------------------------------
+
+  Per-molecule failures : 10
+  Relational failures   : 2
+  Total failures        : 12
+
+  OVERALL: FAIL — check failures above; consider GFN2-xTB MEPS fallback
+==========================================================================================
+
+============================================================
+Done: Thu Apr 16 01:13:41 AM EDT 2026
+Results dir: /home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/runs/benchmark_01
+============================================================

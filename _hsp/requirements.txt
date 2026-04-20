@@ -1,0 +1,6 @@
+rdkit>=2024.03
+pandas
+numpy
+scipy
+matplotlib
+tqdm

@@ -1,9 +1,0 @@
-======================================================
-Catalogue scrape job started: Tue Apr  7 10:32:08 PM EDT 2026
-Node: kn092
-Output CSV: /home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/Dataset/catalogues.csv
-Checkpoint dir: /home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/Dataset/checkpoints
-======================================================
-[Sigma-Aldrich] Resuming: loading SID details from /home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/Dataset/checkpoints/Sigma-Aldrich_sids.json
-[Sigma-Aldrich] Resuming: loading properties from /home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/Dataset/checkpoints/Sigma-Aldrich_props.csv
-[Sigma-Aldrich] Applying RDKit filters …
