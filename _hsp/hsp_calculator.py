@@ -55,6 +55,13 @@ class HSPResult:
     n_si_atoms: int = 0
     used_2nd_order: bool = False
     approx_ring_correction: bool = False
+    # Count of matched groups whose contribution is "***" (not available) in
+    # Tables A.1/A.2 for each parameter. These are skipped in the sum, i.e.
+    # treated as zero, so a non-zero count means the reported value is missing
+    # a term the paper explicitly declines to supply.
+    n_unavail_d: int = 0
+    n_unavail_p: int = 0
+    n_unavail_hb: int = 0
     error: Optional[str] = None
     group_counts: dict = field(default_factory=dict)   # name → count
 
@@ -324,6 +331,19 @@ def _count_second_order(mol: Chem.Mol, fo_counts: dict[str, int]) -> dict[str, i
     pat_diket = Chem.MolFromSmarts("[CX3](=O)[CX4][CX3](=O)")
     _add("C(=O)-C-C(=O)", len(mol.GetSubstructMatches(pat_diket)))
 
+    # ---- CcyclicHm=Ncyclic-CcyclicHn=CcyclicHp (Table A.2) --------------
+    # Pyridine-type conjugated ring nitrogen. The paper's example is
+    # 2,4,6-trimethylpyridine at 1 occurrence, so count one per aromatic
+    # six-membered ring carrying exactly one ring nitrogen.
+    for ring in ring_atom_sets:
+        if len(ring) != 6:
+            continue
+        atoms = [mol.GetAtomWithIdx(i) for i in ring]
+        if not all(a.GetIsAromatic() for a in atoms):
+            continue
+        if sum(1 for a in atoms if a.GetAtomicNum() == 7) == 1:
+            _add("CcyclicHm=Ncyclic-CcyclicHn=CcyclicHp")
+
     return so
 
 
@@ -433,8 +453,11 @@ def compute_hsp(smiles: str) -> HSPResult:
     for gname, cnt in fo_counts.items():
         cd, cp, ch = fo_lookup[gname]
         if cd is not None: sum_Ci_d  += cnt * cd
+        else:              result.n_unavail_d  += cnt
         if cp is not None: sum_Ci_p  += cnt * cp
+        else:              result.n_unavail_p  += cnt
         if ch is not None: sum_Ci_hb += cnt * ch
+        else:              result.n_unavail_hb += cnt
 
     so_lookup = {name: (dd, dp, dh) for name, dd, dp, dh in SECOND_ORDER_GROUPS}
     for gname, cnt in so_counts.items():
@@ -442,8 +465,11 @@ def compute_hsp(smiles: str) -> HSPResult:
             continue
         dd, dp, dh = so_lookup[gname]
         if dd is not None: sum_Dj_d  += cnt * dd
+        else:              result.n_unavail_d  += cnt
         if dp is not None: sum_Dj_p  += cnt * dp
+        else:              result.n_unavail_p  += cnt
         if dh is not None: sum_Dj_hb += cnt * dh
+        else:              result.n_unavail_hb += cnt
 
     try:
         delta_D, delta_P, delta_HB = _apply_formulas(
@@ -482,6 +508,9 @@ def calculate_hsp_batch(
             "has_si":                r.has_si,
             "n_si_atoms":            r.n_si_atoms,
             "used_2nd_order":        r.used_2nd_order,
+            "n_unavail_d":           r.n_unavail_d,
+            "n_unavail_p":           r.n_unavail_p,
+            "n_unavail_hb":          r.n_unavail_hb,
             "approx_ring_correction": r.approx_ring_correction,
             "hsp_error":             r.error,
         })

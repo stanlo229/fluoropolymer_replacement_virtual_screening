@@ -19,6 +19,40 @@ HSP formulas (Eqs. A.2–A.4, 2012 update)
 Low-value fallback (Eqs. A.5–A.6):
     if delta_p  < 3 MPa^0.5: recompute with constant 2.6560
     if delta_hb < 3 MPa^0.5: recompute with constant 1.3720
+
+Verification status (2026-09-17)
+--------------------------------
+Every value below was checked line by line against Appendix A of the 2012
+paper. Result: 76/76 first-order groups (Table A.1) and 37/37 second-order
+groups (Table A.2) match exactly, and all seven constants match. Second-order
+group IDENTIFICATION was validated against the paper's own 20 worked examples
+(Section A.4); 10 checked, 10 reproduce.
+
+Corrections made during that audit:
+  * REMOVED two invented first-order groups that appear nowhere in Table A.1:
+    "CONH"  (secondary amide)        had dp=4.1000, dhb=3.5000
+    "CON"   (generic tertiary amide) had dp=3.8000, dhb=2.0000
+    These drove every amide monomer in the screening library. See the amide
+    routing note beside the amine groups below.
+  * ADDED three Table A.1 groups that were missing: Cl-(C=C), CF, CH2=C=C<.
+  * ADDED the Table A.2 group CcyclicHm=Ncyclic-CcyclicHn=CcyclicHp.
+  * Table A.5 fixes: removed ">C<" (not in A.5; it had been given >C=C<'s
+    value), CH2N dp 0.6477 -> 0.7055 (0.6477 is -CH<'s value).
+  * Table A.6 fixes: ACCOO dp 0.4912 -> *** (no value published),
+    AC(ACHm)2AC(ACHn)2 dp 0.0130 -> 0.0669.
+
+SILICON: Table A.1 contains NO silicon group of any kind. The elements the
+method covers are C, H, O, N, S, F, Cl, Br and I. Si, Se, B, P, Ge, Te and As
+have no contribution and cannot be scored. See si_correction.py.
+
+Known gaps, carried from the paper itself (NOT transcription errors):
+  * Table A.5 lists ACCH<, CHNH and CCl2F, but Table A.1 has no first-order
+    entry for them, so they cannot be used. 41 of the 44 A.5 rows are usable.
+  * Many cells are "***" (not available). These are skipped in the sum, i.e.
+    treated as zero. hsp_calculator.HSPResult.n_unavail_{d,p,hb} counts them
+    so a prediction resting on a missing term can be identified.
+  * The method is stated to apply to organic compounds with three or more
+    carbon atoms, and Eqs. A.3/A.4 only above 3 MPa^0.5 (hence A.5/A.6).
 """
 
 # ---------------------------------------------------------------------------
@@ -59,9 +93,14 @@ FIRST_ORDER_GROUPS = [
 
     # ---- Amides ---------------------------------------------------------
     ("CONH2",         "[CX3](=O)[NX3H2]",                       -1.22,   5.9361,  5.3646),
-    ("CONH",          "[CX3](=O)[NX3H1]",                        None,   4.1000,  3.5000),  # not in table; use NH correction
     ("CON(CH3)2",     "[CX3](=O)[NX3H0]([CH3X4])[CH3X4]",      95.97,   5.5309,  3.2455),
-    ("CON",           "[CX3](=O)[NX3H0]",                        None,   3.8000,  2.0000),  # generic tertiary amide fallback
+    # Table A.1 has NO group for a secondary amide (CONH) or for a generic
+    # tertiary amide. Two entries previously sat here carrying invented values
+    # (CONH: dp=4.1000, dhb=3.5000; CON: dp=3.8000, dhb=2.0000) that appear
+    # nowhere in the paper. They are removed. Such amides now decompose into the
+    # published catch-all groups ">C=O (except as above)" + "NH/N (except as
+    # above)", which is what "except as above" is for: no more specific group
+    # claims those atoms. See the amide note in hsp_calculator.py.
 
     # ---- Ketones --------------------------------------------------------
     ("CH3CO",         "[CH3X4][CX3](=O)[#6]",                  -29.41,   2.1567, -1.1683),
@@ -110,14 +149,14 @@ FIRST_ORDER_GROUPS = [
     # ---- Amines ---------------------------------------------------------
     # ACNH2: owns the N only; aromatic C is counted separately as ACH/AC.
     ("ACNH2",         "[NX3H2;$([NX3H2][c])]",                 253.66,   1.6493,  4.4945),
-    ("CH2NH2",        "[CH2X4][NX3H2]",                         -49.96,  -0.3449,  2.7280),
-    ("CHNH2",         "[CHX4][NX3H2]",                           18.53,  -1.4337,  0.5647),
-    ("CH3NH",         "[CH3X4][NX3H1]",                           None,   0.5060,  5.7321),
-    ("CH2NH",         "[CH2X4][NX3H1]",                          96.18,   0.2616,  1.4053),
-    ("NH_other",      "[NX3H1;!$(NC=O);!$(Nc)]",                  None,  -0.0746,  2.0646),
-    ("CH3N",          "[CH3X4][NX3H0]",                         170.59,   1.0575,  1.8500),
-    ("CH2N",          "[CH2X4][NX3H0]",                         152.54,   2.6766,  1.5557),
-    ("N_other",       "[NX3H0;!$(NC=O);!$(Nc)]",                267.06,   2.2212,  1.3655),
+    ("CH2NH2",        "[CH2X4][NX3H2;!$(NC=O)]",                         -49.96,  -0.3449,  2.7280),
+    ("CHNH2",         "[CHX4][NX3H2;!$(NC=O)]",                           18.53,  -1.4337,  0.5647),
+    ("CH3NH",         "[CH3X4][NX3H1;!$(NC=O)]",                           None,   0.5060,  5.7321),
+    ("CH2NH",         "[CH2X4][NX3H1;!$(NC=O)]",                          96.18,   0.2616,  1.4053),
+    ("NH_other",      "[NX3H1;!$(Nc)]",                  None,  -0.0746,  2.0646),
+    ("CH3N",          "[CH3X4][NX3H0;!$(NC=O)]",                         170.59,   1.0575,  1.8500),
+    ("CH2N",          "[CH2X4][NX3H0;!$(NC=O)]",                         152.54,   2.6766,  1.5557),
+    ("N_other",       "[NX3H0;!$(Nc)]",                267.06,   2.2212,  1.3655),
 
     # ---- Imine / pyridine -----------------------------------------------
     (">C=N_",         "[CX3]=[NX2]",                            -10.55,  -0.1692, -5.3820),
@@ -127,7 +166,9 @@ FIRST_ORDER_GROUPS = [
     ("CF3",           "[CX4H0]([F])([F])[F]",                   -13.79,  -2.1381, -1.2997),
     ("CF2",           "[CX4H0]([F])[F]",                       -103.83,    None,    None),
     ("ACF",           "[FX1][c]",                                27.74,   0.1293, -0.6613),
+    ("CF",            "[CX4]([FX1])",                            20.32,    None,    None),
     ("F_other",       "[FX1]",                                  -80.11,    None,    None),
+    ("Cl-(C=C)",      "[ClX1;$([ClX1][CX3]=[CX3])]",             45.32,   2.2673, -0.5258),
     ("CCl3",          "[CX4H0]([ClX1])([ClX1])[ClX1]",           None,   1.1060, -2.5679),
     ("CHCl2",         "[CHX4]([ClX1])[ClX1]",                  197.67,   1.6255, -3.0669),
     ("CCl2",          "[CX4H0]([ClX1])[ClX1]",                  72.60,   0.1035, -1.3220),
@@ -153,6 +194,7 @@ FIRST_ORDER_GROUPS = [
     ("-CH_C_",        "[CHX3]=[CX3H0]",                          62.48,  -1.1018, -1.7171),
     (">C_C_",         "[CX3H0]=[CX3H0]",                         50.10,   0.9957, -1.9773),
     ("CH2_C_CH-",     "[CH2X3]=[CX2]=[CHX2]",                  -161.71,   None,  -0.7545),
+    ("CH2_C_C<",      "[CH2X3]=[CX2]=[CX3H0]",                    6.64,   None,  -1.7087),
 
     # ---- Alkyne ---------------------------------------------------------
     ("CH_trp_C",      "[CX2H1]#[CX2]",                           45.86,  -1.5147,  1.2582),
@@ -214,6 +256,7 @@ SECOND_ORDER_GROUPS = [
     ("NcyclicH-Ccyclic=O", 93.54,    2.0813,   1.2226),
     ("-O-CHm-O-CHn-",      31.52,    0.3293,   0.2527),
     ("C(=O)-C-C(=O)",     -61.38,   -0.4126,   1.2240),
+    ("CcyclicHm=Ncyclic-CcyclicHn=CcyclicHp", 53.11, -0.5075, -2.1004),
 ]
 
 # ---------------------------------------------------------------------------
@@ -229,7 +272,6 @@ LOW_VALUE_CORRECTIONS = {
     "-CH3":           (-0.7107,  0.2990),
     "-CH2-":          (-0.1361, -0.1161),
     "-CH<":           ( 0.6477,  0.1386),
-    ">C<":            (   None, -0.1212),
     "CH2_CH_":        (-0.2511,  1.3552),
     "-CH_CH-":        (-0.1503,  0.4819),
     "CH2_C_":         ( 0.6956,  0.1115),
@@ -254,7 +296,7 @@ LOW_VALUE_CORRECTIONS = {
     "CH2NH2":         (   None,    None),
     "CH2NH":          ( 0.8875,    None),
     "CH3N":           (   None, -0.1700),
-    "CH2N":           ( 0.6477, -1.0369),  # closest match; Table A.5 shows 0.6477 not 0.7055
+    "CH2N":           ( 0.7055, -1.0369),
     "CH2S":           (   None,  0.1461),
     "CH2Cl":          (   None,  0.4895),
     "CHCl":           (   None,  0.1300),
@@ -263,6 +305,8 @@ LOW_VALUE_CORRECTIONS = {
     "ACF":            (   None, -0.3718),
     "Cl_other":       (   None,  1.1251),
     "CF3":            (   None, -0.0887),
+    "Cl-(C=C)":       (   None,  0.6606),
+    "CH2_C_C<":       ( 1.2654,    None),
     "O_other":        (-0.5555,    None),
     "S_other":        ( 0.0445,    None),
     ">C=O_other":     (   None, -0.0553),
@@ -279,7 +323,7 @@ LOW_VALUE_2ND_ORDER = {
     "-CH2-C=":              ( 0.0192,  0.0660),
     ">C{H/C}-C=":           (-0.4460,  0.3422),
     "string_in_cyclic":     (   None, -0.2809),
-    "ACCOO":                ( 0.4912,  0.0000),
-    "AC(ACHm)2AC(ACHn)2":   ( 0.0130,  0.0864),
+    "ACCOO":                (   None,  0.0000),
+    "AC(ACHm)2AC(ACHn)2":   ( 0.0669,  0.0864),
     "-O-CHm-O-CHn-":        ( 0.0000,    None),
 }

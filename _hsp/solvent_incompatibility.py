@@ -137,6 +137,7 @@ def make_grid(
     rank_col: str | None = None,
     ncols: int = 5,
     red_cols: list[str] | None = None,
+    flag_col: str | None = None,
 ) -> Path:
     n = len(df_top)
     nrows = (n + ncols - 1) // ncols
@@ -150,8 +151,14 @@ def make_grid(
     fig = plt.figure(figsize=(fig_w, fig_h), facecolor=BG_DARK)
     fig.suptitle(
         title or "Top 50 Norbornene Monomers",
-        fontsize=11, color=FG_HEADER, fontweight="bold", y=0.998, va="top",
+        fontsize=11, color=FG_HEADER, fontweight="bold",
+        y=1.0 - 0.10 * min(0.12, 0.75 / fig_h), va="top",
     )
+
+    # Reserve a fixed ~0.75 in header band for the suptitle instead of the
+    # GridSpec default top=0.88, which on a tall multi-row grid leaves inches
+    # of dead space between the title and the first row.
+    header_frac = min(0.12, 0.75 / fig_h)
 
     gs = gridspec.GridSpec(
         nrows * 2, ncols,
@@ -159,6 +166,10 @@ def make_grid(
         height_ratios=[MOL_H, TEXT_H] * nrows,
         hspace=0.08,
         wspace=0.06,
+        top=1.0 - header_frac,
+        bottom=0.01,
+        left=0.01,
+        right=0.99,
     )
 
     # Build ordered list of (name, short_label, color) from REFERENCE_STYLE
@@ -190,6 +201,19 @@ def make_grid(
             fontweight="bold",
             bbox=dict(boxstyle="round,pad=0.2", facecolor="#334466", alpha=0.8, linewidth=0),
         )
+
+        # Data-quality badge (top-right): e.g. Si-clamped delta, uncovered elements
+        if flag_col and flag_col in row.index:
+            flag_txt = str(row[flag_col] if row[flag_col] is not None else "").strip()
+            if flag_txt and flag_txt.lower() != "nan":
+                ax_img.text(
+                    0.97, 0.97, flag_txt,
+                    transform=ax_img.transAxes,
+                    fontsize=5.2, color="#ffd166", va="top", ha="right",
+                    fontweight="bold",
+                    bbox=dict(boxstyle="round,pad=0.22", facecolor="#6b4700",
+                              alpha=0.9, linewidth=0),
+                )
 
         # ---- text annotation ----
         ax_txt = fig.add_subplot(gs[r * 2 + 1, c])
