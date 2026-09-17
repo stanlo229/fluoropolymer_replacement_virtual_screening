@@ -126,6 +126,30 @@ ENVELOPE = {
 # ---------------------------------------------------------------------------
 METHOD_AAE = {"delta_D_corr": 0.33, "delta_P_corr": 0.82, "delta_H_corr": 0.77}
 
+# ---------------------------------------------------------------------------
+# Dominance margin: how far one Hansen component exceeds the other two
+# combined, in MPa^0.5 so the score reads directly.
+#
+#     m_D = delta_D - (delta_P + delta_H)     etc.
+#
+# This answers "max X, minimal everything else" in its literal sense: it
+# rewards a large component AND small others. The alternative convention, Teas
+# fractional parameters f = delta_X / sum(delta), scores purity irrespective of
+# magnitude; the two agree closely for polar and H-bonding but pick very
+# different dispersion sets, because delta_D has a floor near 12 for any
+# organic while delta_P and delta_H can approach zero.
+#
+# The margin is a linear combination of all three measured components, so its
+# uncertainty propagates as the root-sum-square of their individual AAEs:
+#     sqrt(0.33^2 + 0.82^2 + 0.77^2) = 1.172 MPa^0.5
+# ---------------------------------------------------------------------------
+MARGIN_COLS = {
+    "margin_dispersion": ("delta_D_corr", "delta_P_corr", "delta_H_corr"),
+    "margin_polar":      ("delta_P_corr", "delta_D_corr", "delta_H_corr"),
+    "margin_hbonding":   ("delta_H_corr", "delta_D_corr", "delta_P_corr"),
+}
+MARGIN_AAE = 1.172
+
 
 # ---------------------------------------------------------------------------
 # Cached per-SMILES property helpers
@@ -328,6 +352,11 @@ def main() -> None:
     # ---- Ra / RED ---------------------------------------------------------
     df, ra_cols, red_cols = compute_ra_columns(df, d_col, p_col, h_col)
 
+    # ---- dominance margins -------------------------------------------------
+    for mcol, (main, o1, o2) in MARGIN_COLS.items():
+        df[mcol] = df[main] - (df[o1] + df[o2])
+        METHOD_AAE[mcol] = MARGIN_AAE
+
     # ---- residual basic nitrogen (acid-base blind spot) --------------------
     df["n_basic_N"] = _map_unique(df["monomer_smiles"], _n_basic_nitrogens)
     n_basic_rows = int((df["n_basic_N"] > 0).sum())
@@ -377,6 +406,13 @@ def main() -> None:
          "Max polarity  (highest delta_P)"),
         ("max_hbonding", h_col, False,
          "Max H-bonding  (highest delta_H)"),
+        # Dominance margins: max one component, minimise the other two.
+        ("dominant_dispersion", "margin_dispersion", False,
+         "Dispersion-dominant  (max delta_D - [delta_P + delta_H])"),
+        ("dominant_polar", "margin_polar", False,
+         "Polarity-dominant  (max delta_P - [delta_D + delta_H])"),
+        ("dominant_hbonding", "margin_hbonding", False,
+         "H-bonding-dominant  (max delta_H - [delta_D + delta_P])"),
     ]
 
     report["rankings"] = {}
@@ -384,6 +420,7 @@ def main() -> None:
         ["sidechain_smiles", "monomer_smiles", "linkage", "source", "link",
          "molecular_weight", d_col, p_col, h_col]
         + ra_cols + red_cols
+        + list(MARGIN_COLS)
         + ["n_basic_N", "incomplete_elements", "n_unmatched_atoms",
            "n_unavail_d", "n_unavail_p", "n_unavail_hb",
            "n_uncovered_atoms", "has_si", "n_si_atoms"]
@@ -420,7 +457,7 @@ def main() -> None:
         csv_out = out_dir / f"top{args.top_n}_ranked_{safe_name}.csv"
         df_top[cols].to_csv(csv_out, index=False)
 
-        is_component = rank_col in METHOD_AAE
+        is_component = rank_col in METHOD_AAE or rank_col in MARGIN_COLS
         sub = f"{len(df):,} monomers after constraints"
         if resolution is not None:
             sub += (
@@ -441,7 +478,10 @@ def main() -> None:
                   red_cols=red_cols, flag_col="qc_flag",
                   rank_label=("δD" if rank_col == d_col else
                               "δP" if rank_col == p_col else
-                              "δH" if rank_col == h_col else "Ra"))
+                              "δH" if rank_col == h_col else
+                              "δD margin" if rank_col == "margin_dispersion" else
+                              "δP margin" if rank_col == "margin_polar" else
+                              "δH margin" if rank_col == "margin_hbonding" else "Ra"))
 
         report["rankings"][safe_name] = {
             "n_basic_N_rows": int((df_top["n_basic_N"] > 0).sum()),

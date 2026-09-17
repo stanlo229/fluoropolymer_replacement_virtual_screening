@@ -238,7 +238,42 @@ a warning, written into `filter_report.json`, and stamped on the figure.
 | max polarity (`delta_P`) | 29.24 – 30.00 | 0.764 | 0.82 | **no** | 27 |
 | max H-bonding (`delta_H`) | 35.04 – 43.73 | 8.691 | 0.77 | yes | 2 |
 
-**Only the H-bonding ranking is meaningful as an ordering.** The dispersion
+### Dominance margins — "max one component, minimise the other two"
+
+Because the plain component rankings above are cap-limited, the same question is
+also asked in a form the envelope cannot degrade:
+
+```
+m_D = delta_D - (delta_P + delta_H)        (and likewise m_P, m_H)
+```
+
+in MPa^0.5, so the score reads directly. This is the literal sense of "max X,
+minimal everything else": it rewards a large component *and* small others.
+
+The alternative convention is **Teas fractional parameters**,
+`f = delta_X / (delta_D + delta_P + delta_H)`, which scores purity irrespective
+of magnitude. The two agree closely for polar (24/25 shared, same #1) and
+H-bonding (18/25, same #1) but pick very different dispersion sets (**7/25**),
+because `delta_D` has a floor near 12 for any organic while `delta_P` and
+`delta_H` can approach zero — so Teas rewards a modest `delta_D` with
+near-zero others (#1 at 17.6 / 0.13 / 0.28) while the margin rewards a large
+one (#1 at 23.2 / 0.27 / 1.95). **The margin convention is in use here.**
+
+A margin is a linear combination of all three measured components, so its
+uncertainty is the root-sum-square of their AAEs:
+`sqrt(0.33^2 + 0.82^2 + 0.77^2) = 1.172 MPa^0.5`. All three margin rankings
+clear that bar:
+
+| Margin ranking | range | spread | AAE | resolved | tied within AAE |
+|---|---|---|---|---|---|
+| dispersion-dominant | 18.70 – 20.98 | 2.282 | 1.172 | yes | 9 |
+| polarity-dominant | 3.20 – 10.46 | 7.266 | 1.172 | yes | 1 |
+| H-bonding-dominant | 6.22 – 19.55 | 13.329 | 1.172 | yes | 1 |
+
+**Prefer these to the plain component rankings.** They answer the same question
+and, unlike max-δD and max-δP, they are actually resolved.
+
+**Of the plain component rankings, only H-bonding is meaningful as an ordering.** The dispersion
 top-25 spans 0.023 MPa^0.5 against a 0.33 error bar — those 25 are an arbitrary
 draw from 252 statistically identical monomers pinned to the `delta_D <= 24`
 cap. Treat max-dispersion and max-polarity as *sets of candidates at the
