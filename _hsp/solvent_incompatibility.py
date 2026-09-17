@@ -138,6 +138,7 @@ def make_grid(
     ncols: int = 5,
     red_cols: list[str] | None = None,
     flag_col: str | None = None,
+    rank_label: str = "Ra",
 ) -> Path:
     n = len(df_top)
     nrows = (n + ncols - 1) // ncols
@@ -263,7 +264,7 @@ def make_grid(
         if rank_col and rank_col in row.index:
             ax_txt.text(
                 0.97, 0.04,
-                f"ranked Ra = {row[rank_col]:.2f}",
+                f"ranked {rank_label} = {row[rank_col]:.2f}",
                 transform=ax_txt.transAxes,
                 fontsize=5.5, color="#888888", va="bottom", ha="right",
                 fontfamily="monospace",

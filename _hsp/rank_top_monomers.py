@@ -118,6 +118,14 @@ ENVELOPE = {
     "delta_H": (0.0, 45.0),
 }
 
+# ---------------------------------------------------------------------------
+# The method's own average absolute error on its fit set, Table A.4 (2012),
+# second-order approximation, over 347-350 experimental compounds.
+# Used to report whether a ranking is actually resolved: if the top-N spread is
+# smaller than the AAE, the ordering is noise, not chemistry.
+# ---------------------------------------------------------------------------
+METHOD_AAE = {"delta_D_corr": 0.33, "delta_P_corr": 0.82, "delta_H_corr": 0.77}
+
 
 # ---------------------------------------------------------------------------
 # Cached per-SMILES property helpers
@@ -359,6 +367,16 @@ def main() -> None:
          "Most water-repellent  (highest Ra from Water)"),
         ("diiodomethane", "Ra_Diiodomethane", False,
          "Most diiodomethane-repellent  (highest Ra from Diiodomethane)"),
+        # Individual Hansen components. Ranked over the SAME C1-C5 survivors as
+        # everything else, unlike make_hansen_grids.py which ranks the raw
+        # unfiltered table. Note these maximise a quantity the C3 envelope caps
+        # from above, so check the resolution line in filter_report.json.
+        ("max_dispersion", d_col, False,
+         "Max dispersion  (highest delta_D)"),
+        ("max_polar", p_col, False,
+         "Max polarity  (highest delta_P)"),
+        ("max_hbonding", h_col, False,
+         "Max H-bonding  (highest delta_H)"),
     ]
 
     report["rankings"] = {}
@@ -375,19 +393,55 @@ def main() -> None:
         df_top = (df.sort_values(rank_col, ascending=ascending)
                     .head(args.top_n).reset_index(drop=True))
 
+        # Is this ranking resolved, or is it a tie inside the method's error?
+        spread = float(df_top[rank_col].max() - df_top[rank_col].min())
+        aae = METHOD_AAE.get(rank_col)
+        resolution = None
+        if aae is not None:
+            best = float(df[rank_col].max() if not ascending else df[rank_col].min())
+            n_tied = int((df[rank_col] >= best - aae).sum() if not ascending
+                         else (df[rank_col] <= best + aae).sum())
+            resolved = spread > aae
+            resolution = {
+                "top_n_spread": round(spread, 4),
+                "method_AAE": aae,
+                "resolved": resolved,
+                "n_within_AAE_of_best": n_tied,
+            }
+            if not resolved:
+                log.warning(
+                    "%s: top-%d spans %.3f MPa^0.5 but the method's own AAE is "
+                    "%.2f — %d monomers lie within one AAE of the best. This "
+                    "ordering is inside the noise floor.",
+                    safe_name, args.top_n, spread, aae, n_tied,
+                )
+
         cols = [c for c in csv_cols if c in df_top.columns]
         csv_out = out_dir / f"top{args.top_n}_ranked_{safe_name}.csv"
         df_top[cols].to_csv(csv_out, index=False)
 
+        is_component = rank_col in METHOD_AAE
+        sub = f"{len(df):,} monomers after constraints"
+        if resolution is not None:
+            sub += (
+                f"  |  top-{args.top_n} spread {resolution['top_n_spread']:.3f} vs "
+                f"method AAE {resolution['method_AAE']:.2f} MPa½"
+                + ("" if resolution["resolved"] else
+                   f"  —  NOT RESOLVED: {resolution['n_within_AAE_of_best']:,} "
+                   f"monomers tie within one AAE")
+            )
         title = (
             f"Top {args.top_n} Norbornene Monomers — {label}\n"
-            f"★ = ranking criterion  |  all Ra in MPa½  |  "
-            f"{len(df):,} monomers after constraints"
+            f"{'' if is_component else '★ = ranking criterion  |  '}"
+            f"all Ra in MPa½  |  {sub}"
         )
         grid_out = out_dir / f"top{args.top_n}_ranked_{safe_name}_grid.png"
         make_grid(df_top, ra_cols, d_col, p_col, h_col, grid_out,
                   title=title, rank_col=rank_col, ncols=args.ncols,
-                  red_cols=red_cols, flag_col="qc_flag")
+                  red_cols=red_cols, flag_col="qc_flag",
+                  rank_label=("δD" if rank_col == d_col else
+                              "δP" if rank_col == p_col else
+                              "δH" if rank_col == h_col else "Ra"))
 
         report["rankings"][safe_name] = {
             "n_basic_N_rows": int((df_top["n_basic_N"] > 0).sum()),
@@ -399,6 +453,7 @@ def main() -> None:
             "n_with_uncovered_elements": int((df_top["incomplete_elements"] != "").sum()),
             "csv": str(csv_out),
             "grid": str(grid_out),
+            "resolution": resolution,
         }
 
         log.info("%-14s top%d: %s %.2f–%.2f  -> %s",

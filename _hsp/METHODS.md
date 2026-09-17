@@ -215,7 +215,36 @@ Three **independent** top-25 rankings are produced — not one blended score:
 2. **Most water-repellent** — highest `Ra_Water`
 3. **Most diiodomethane-repellent** — highest `Ra_Diiodomethane`
 
-plus a supplementary **water ranking excluding residual basic N** (§6).
+plus three **individual Hansen component** rankings — highest `delta_D`
+(max dispersion), highest `delta_P` (max polarity), highest `delta_H`
+(max H-bonding) — and a supplementary **water ranking excluding residual basic
+N** (§6). All are computed over the same C1–C5 survivors. (`make_hansen_grids.py`
+also emits component top-50s but ranks the *raw unfiltered* table, so its output
+is not comparable with anything else here.)
+
+### Is a ranking actually resolved?
+
+Ranking by a raw component maximises a quantity the C3 envelope caps from
+above, so the top of the list can be a tie against the ceiling rather than a
+result. Each ranking therefore reports its top-N spread against the method's
+own average absolute error (Table A.4, second-order, 347–350 compounds:
+`delta_D` 0.33, `delta_P` 0.82, `delta_H` 0.77 MPa^0.5), and how many library
+monomers lie within one AAE of the best value. `resolved: false` is printed as
+a warning, written into `filter_report.json`, and stamped on the figure.
+
+| Component ranking | range | spread | AAE | resolved | tied within AAE |
+|---|---|---|---|---|---|
+| max dispersion (`delta_D`) | 23.98 – 24.00 | 0.023 | 0.33 | **no** | **252** |
+| max polarity (`delta_P`) | 29.24 – 30.00 | 0.764 | 0.82 | **no** | 27 |
+| max H-bonding (`delta_H`) | 35.04 – 43.73 | 8.691 | 0.77 | yes | 2 |
+
+**Only the H-bonding ranking is meaningful as an ordering.** The dispersion
+top-25 spans 0.023 MPa^0.5 against a 0.33 error bar — those 25 are an arbitrary
+draw from 252 statistically identical monomers pinned to the `delta_D <= 24`
+cap. Treat max-dispersion and max-polarity as *sets of candidates at the
+ceiling*, not as ranked lists; if you need a genuine dispersion ordering, the
+envelope has to be replaced by something that discriminates rather than
+truncates.
 Current results (3,621 ester / 3,431 amide survivors):
 
 | Ranking | Ra range | ester/amide | with basic N |
