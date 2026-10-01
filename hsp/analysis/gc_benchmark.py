@@ -150,6 +150,19 @@ def main():
         lam, wm = r.model.split("_l")[1].split("_w")
         best[form] = (float(lam), float(wm), r.model)
     keep = ["SP_paper", best["SP_refit"][2], best["Fedors_refit"][2], "XGB_groups", "XGB_fp", "ET_fp"]
+
+    # out-of-fold predictions of the compared models (contains HSPiP values:
+    # stays in the gitignored benchmark folder)
+    oof = ref[["ikey14", "Name", "tier", "canonical_smiles", "n_heavy", "n_si",
+               "ring_class", "ref_D", "ref_P", "ref_H", "MVol"]].copy()
+    oof["fold"] = -1
+    for f, (_, te) in enumerate(folds):
+        oof.loc[te, "fold"] = f
+    for m in keep:
+        short = m.split("_l")[0]
+        oof[[f"{short}_D", f"{short}_P", f"{short}_H"]] = preds[m]
+    oof.to_csv(OUT / "gc_oof_predictions.csv", index=False)
+
     pd.set_option("display.width", 220)
     print("\n== grid (tier 1, all) ==")
     print(t1[t1.model.str.contains("refit")].sort_values("med_Ra_err").to_string(index=False))

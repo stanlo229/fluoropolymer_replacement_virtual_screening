@@ -19,3 +19,6 @@ hsp/results/v3/monomers_hsp_corrected.csv
 hsp/results/v3/hsp_Ra_ranked.csv
 hsp/results/v3/monomers_hsp_solvent_Ra.csv
 hsp/results/v2/monomers_hsp_solvent_Ra.csv
+
+# Hosted-page build output of hsp/viz/build_explorer.py (regenerable)
+hsp/viz/build/

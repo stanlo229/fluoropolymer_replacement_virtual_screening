@@ -32,5 +32,7 @@ print(visualize(df, out_dir=f"results/{v}"))
 EOF
 
 echo "== Constrained top-25 rankings ($VER) =="
+NOTE_ARG=()
+[ -n "${TITLE_NOTE:-}" ] && NOTE_ARG=(--title_note "$TITLE_NOTE")
 python rank_top_monomers.py --input "$IN" --out_dir "$OUT" --catalogues "$CAT" \
-    --top_n 25 --ncols 5 "${AAE_ARG[@]}"
+    --top_n 25 --ncols 5 "${AAE_ARG[@]}" "${NOTE_ARG[@]}"

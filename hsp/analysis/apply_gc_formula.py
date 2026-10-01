@@ -16,12 +16,13 @@ rule reads.
 
 Outputs
   results/v3/monomers_hsp_formula.csv     full table
-  results/v3/monomers_hsp_corrected.csv   downstream-compatible (delta_*_corr)
-  results/v3/si_monomers.csv              Si monomers only, for manual filtering
+  results/v3/monomers_hsp_corrected.csv   downstream input, non-Si monomers only
+  results/v3/si/monomers_hsp_corrected.csv  downstream input, Si monomers only
+  results/v3/si/si_monomers.csv           all Si monomers with v3 values
 
-Si monomers ARE scored and ranked, but are NOT reliable: the Si groups are
-fitted on 67 HSPiP Si compounds, only 7 of them curated, all far smaller than
-the monomers. Every Si row carries hsp_note and expected_Ra_err = NaN.
+Si monomers are scored, but ranked SEPARATELY (results/v3/si/) because their
+values may not be reliable; see results/v3/si/README.md. Every Si row carries
+hsp_note and expected_Ra_err = NaN in monomers_hsp_formula.csv.
   results/manual/2026-09-30/hsp6_v3.csv   the six requested monomers
 """
 from __future__ import annotations
@@ -102,8 +103,15 @@ def main():
     for k in "DPH":
         comp[f"delta_{k}"] = comp[f"delta_{k}_corr"] = comp[k]
     comp = comp.drop(columns=[c for c in comp.columns if c.startswith("Ra_")])
-    comp.to_csv(V3 / "monomers_hsp_corrected.csv", index=False)
-    df[si].sort_values("Ra_PTFE").to_csv(V3 / "si_monomers.csv", index=False)
+    # main rankings: non-Si only (Si rows blanked, dropped by the C0 rule);
+    # Si monomers get their own rankings and grids in results/v3/si/
+    main = comp.copy()
+    main.loc[si.to_numpy(), ["delta_D", "delta_P", "delta_H",
+                             "delta_D_corr", "delta_P_corr", "delta_H_corr"]] = np.nan
+    main.to_csv(V3 / "monomers_hsp_corrected.csv", index=False)
+    (V3 / "si").mkdir(exist_ok=True)
+    comp[si.to_numpy()].to_csv(V3 / "si" / "monomers_hsp_corrected.csv", index=False)
+    df[si].sort_values("Ra_PTFE").to_csv(V3 / "si" / "si_monomers.csv", index=False)
 
     six = score(list(SIX.values()), space, fed, spr)
     six.insert(0, "id", list(SIX))

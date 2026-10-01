@@ -20,28 +20,28 @@ The following have been reloaded with a version change:
 (PosixPath('results/v3/hsp_hansen_space.png'), PosixPath('results/v3/hsp_Ra_ranked.csv'))
 == Constrained top-25 rankings (v3) ==
 INFO: Loaded 79314 monomers from results/v3/monomers_hsp_corrected.csv
-INFO: C0 HSP present                       79314 ->   79314  (-0) 
+INFO: C0 HSP present                       79314 ->   79007  (-307) 
 INFO: Evaluating C1 catalogue filter on unique sidechains…
-INFO: C1 chiral/phenol/aniline             79314 ->   24191  (-55123) chiral=0 phenol=21678 aniline=36884 (overlapping)
-INFO: C2 unphysical delta < 0              24191 ->   24191  (-0) of which Si monomers=0
-INFO: C3 physical envelope                 24191 ->   24191  (-0) dD (12.0, 24.0), dP<=30.0, dH<=45.0
+INFO: C1 chiral/phenol/aniline             79007 ->   23987  (-55020) chiral=0 phenol=21638 aniline=36821 (overlapping)
+INFO: C2 unphysical delta < 0              23987 ->   23987  (-0) of which Si monomers=0
+INFO: C3 physical envelope                 23987 ->   23987  (-0) dD (12.0, 24.0), dP<=30.0, dH<=45.0
 INFO: Evaluating C4 relaxed coverage on unique monomers…
-INFO: C4 relaxed group coverage            24191 ->   24117  (-74) strict n_unmatched==0 would have kept 24096
-INFO: C5 dedup (stereo + HSP triplet)      24117 ->   17575  (-6542) stereo-dedup intermediate=23814; isotope-labelled 208 -> 12 after preferring unlabelled twins
-INFO: Purchase links joined for 17575 / 17575 monomers
-INFO: Residual basic N present in 1598 / 17575 monomers (9.1%)
-INFO: Full filtered set (17575 monomers) -> results/v3/monomers_filtered_ranked.csv
-INFO: ptfe           top25: Ra_PTFE 5.38–7.26  -> top25_ranked_ptfe_grid.png
-INFO: water          top25: Ra_Water 42.09–43.90  -> top25_ranked_water_grid.png
+INFO: C4 relaxed group coverage            23987 ->   23913  (-74) strict n_unmatched==0 would have kept 23894
+INFO: C5 dedup (stereo + HSP triplet)      23913 ->   17376  (-6537) stereo-dedup intermediate=23612; isotope-labelled 208 -> 12 after preferring unlabelled twins
+INFO: Purchase links joined for 17376 / 17376 monomers
+INFO: Residual basic N present in 1595 / 17376 monomers (9.2%)
+INFO: Full filtered set (17376 monomers) -> results/v3/monomers_filtered_ranked.csv
+INFO: ptfe           top25: Ra_PTFE 6.46–8.39  -> top25_ranked_ptfe_grid.png
+INFO: water          top25: Ra_Water 42.05–43.90  -> top25_ranked_water_grid.png
 INFO: diiodomethane  top25: Ra_Diiodomethane 15.94–26.18  -> top25_ranked_diiodomethane_grid.png
 INFO: max_dispersion top25: delta_D_corr 21.10–23.27  -> top25_ranked_max_dispersion_grid.png
 INFO: max_polar      top25: delta_P_corr 14.82–18.12  -> top25_ranked_max_polar_grid.png
 INFO: max_hbonding   top25: delta_H_corr 17.97–24.57  -> top25_ranked_max_hbonding_grid.png
-WARNING: dominant_dispersion: top-25 spans 1.848 MPa^0.5 but the method's own AAE is 2.82 — 108 monomers lie within one AAE of the best. This ordering is inside the noise floor.
-INFO: dominant_dispersion top25: margin_dispersion 12.91–14.76  -> top25_ranked_dominant_dispersion_grid.png
+WARNING: dominant_dispersion: top-25 spans 1.883 MPa^0.5 but the method's own AAE is 2.82 — 96 monomers lie within one AAE of the best. This ordering is inside the noise floor.
+INFO: dominant_dispersion top25: margin_dispersion 12.87–14.76  -> top25_ranked_dominant_dispersion_grid.png
 WARNING: dominant_polar: top-25 spans 2.812 MPa^0.5 but the method's own AAE is 2.82 — 25 monomers lie within one AAE of the best. This ordering is inside the noise floor.
 INFO: dominant_polar top25: margin_polar -12.24–-9.43  -> top25_ranked_dominant_polar_grid.png
 WARNING: dominant_hbonding: top-25 spans 2.607 MPa^0.5 but the method's own AAE is 2.82 — 28 monomers lie within one AAE of the best. This ordering is inside the noise floor.
 INFO: dominant_hbonding top25: margin_hbonding -10.87–-8.26  -> top25_ranked_dominant_hbonding_grid.png
-INFO: water(no basic N) top25: Ra_Water 42.09–43.90  -> top25_ranked_water_no_basic_N_grid.png
+INFO: water(no basic N) top25: Ra_Water 42.05–43.90  -> top25_ranked_water_no_basic_N_grid.png
 INFO: Filter report -> results/v3/filter_report.json

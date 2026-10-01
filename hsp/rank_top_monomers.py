@@ -211,6 +211,8 @@ def main() -> None:
     parser.add_argument("--catalogues", default="../dataset/catalogues.csv")
     parser.add_argument("--top_n", type=int, default=25)
     parser.add_argument("--ncols", type=int, default=5)
+    parser.add_argument("--title_note", default="",
+                        help="Extra line on every grid title, e.g. a reliability warning")
     parser.add_argument("--method_aae", default=None,
                         help="D,P,H mean absolute error of the HSP source, used to judge "
                              "whether a ranking is resolved (default: S-P Table A.4 values). "
@@ -487,6 +489,7 @@ def main() -> None:
             f"Top {args.top_n} Norbornene Monomers — {label}\n"
             f"{'' if is_component else '★ = ranking criterion  |  '}"
             f"all Ra in MPa½  |  {sub}"
+            + (f"\n{args.title_note}" if args.title_note else "")
         )
         grid_out = out_dir / f"top{args.top_n}_ranked_{safe_name}_grid.png"
         make_grid(df_top, ra_cols, d_col, p_col, h_col, grid_out,

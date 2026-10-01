@@ -1,0 +1,11 @@
+
+The following have been reloaded with a version change:
+  1) ipykernel/2026a => ipykernel/2024a
+  2) scipy-stack/2026a => scipy-stack/2024a
+
+skip bench
+skip apply
+== down (07:30:36) ==
+method AAE 0.584,1.923,1.975
+== si (07:32:33) ==
+ALL DONE (07:32:37)

@@ -1,0 +1,522 @@
+<title>Norbornene Hansen Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@87,500;87,650&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one-screen instrument console. Slim header with run facts, a control strip,
+   the 3D Hansen-space plot filling the remaining height, and an inspector rail on the right
+   that stacks under the plot on narrow screens. */
+:root {
+  --bg: #eef2f4;
+  --surface: #ffffff;
+  --ink: #13202a;
+  --muted: #566874;
+  --line: #d3dce1;
+  --accent: #0d6a87;
+  --si: #a85d08;
+  --hl: #b0185a;
+  --chip: #e3ebef;
+  --warn-bg: #fbefe1;
+  --font-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", Roboto, Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --radius: 6px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0c1317; --surface: #121c22; --ink: #e2ebee; --muted: #8ea1ab; --line: #24333b;
+    --accent: #4fc2da; --si: #f0a24a; --hl: #ff74aa; --chip: #1b2830; --warn-bg: #2b2114;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0c1317; --surface: #121c22; --ink: #e2ebee; --muted: #8ea1ab; --line: #24333b;
+  --accent: #4fc2da; --si: #f0a24a; --hl: #ff74aa; --chip: #1b2830; --warn-bg: #2b2114;
+  color-scheme: dark;
+}
+html, body { height: 100%; margin: 0; }
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font: 14px/1.45 var(--font-body);
+}
+.app {
+  height: 100%; display: flex; flex-direction: column; gap: 10px;
+  padding-inline: 16px; padding-block: 12px;
+}
+header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; }
+h1 {
+  margin: 0; font: 650 22px/1.1 var(--font-display); font-stretch: 87%;
+  letter-spacing: 0.01em; text-wrap: balance;
+}
+.facts { display: flex; flex-wrap: wrap; gap: 4px 14px; color: var(--muted); font-size: 12.5px; }
+.facts b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+.controls {
+  display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px 16px;
+  padding: 10px 12px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+}
+.field { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.field > label, .lbl {
+  font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); font-weight: 600;
+}
+select, input[type="search"] {
+  font: 13px var(--font-body); color: var(--ink); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 5px; padding: 5px 8px; max-width: 100%;
+}
+input[type="search"] { width: 15rem; font-family: var(--font-mono); font-size: 12px; }
+.toggle { display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; white-space: nowrap; }
+.toggle input { accent-color: var(--accent); }
+.toggle .si-swatch { color: var(--si); font-weight: 600; }
+button {
+  font: 500 12.5px var(--font-body); color: var(--accent); background: transparent;
+  border: 1px solid var(--accent); border-radius: 5px; padding: 5px 10px; cursor: pointer;
+}
+button:hover { background: var(--chip); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+input[type="range"] { accent-color: var(--accent); width: 6rem; }
+.count { font: 12px var(--font-mono); color: var(--muted); align-self: center; }
+main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 10px; }
+#plot-wrap {
+  position: relative; min-width: 0; min-height: 0; background: var(--surface);
+  border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
+}
+#plot { position: absolute; inset: 0; }
+#status {
+  position: absolute; inset: 0; display: grid; place-items: center; text-align: center;
+  color: var(--muted); padding: 24px; font-size: 13px;
+}
+aside {
+  min-width: 0; min-height: 0; overflow-y: auto; background: var(--surface);
+  border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+aside h2 { margin: 0; font: 650 15px/1.2 var(--font-display); font-stretch: 87%; }
+.hint { color: var(--muted); font-size: 12.5px; margin: 0; }
+#mol { width: 100%; height: 230px; border: 1px solid var(--line); border-radius: 5px; background: var(--bg); }
+#mol svg { width: 100%; height: 100%; display: block; }
+.smiles {
+  font: 11.5px/1.4 var(--font-mono); word-break: break-all; color: var(--ink);
+  background: var(--bg); border: 1px solid var(--line); border-radius: 5px; padding: 6px 8px; margin: 0;
+}
+.row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.chip {
+  font-size: 11.5px; padding: 2px 8px; border-radius: 999px; background: var(--chip); color: var(--ink);
+  white-space: nowrap;
+}
+.chip.si { background: var(--warn-bg); color: var(--si); font-weight: 600; }
+.chip.ok { color: var(--accent); font-weight: 600; }
+.warn {
+  background: var(--warn-bg); color: var(--ink); border-left: 3px solid var(--si);
+  padding: 7px 9px; font-size: 12.5px; border-radius: 4px; margin: 0;
+}
+table.hsp { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+table.hsp th, table.hsp td { padding: 3px 4px; text-align: right; font-size: 12.5px; border-bottom: 1px solid var(--line); }
+table.hsp th:first-child, table.hsp td:first-child { text-align: left; color: var(--muted); font-weight: 500; }
+table.hsp td { font-family: var(--font-mono); }
+.big3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.big3 div { background: var(--bg); border: 1px solid var(--line); border-radius: 5px; padding: 5px 7px; }
+.big3 span { display: block; font-size: 10.5px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.big3 b { font: 500 17px var(--font-mono); }
+a { color: var(--accent); }
+details { font-size: 12.5px; color: var(--muted); }
+details summary { cursor: pointer; color: var(--ink); font-weight: 500; }
+details p { margin: 6px 0; max-width: 65ch; }
+@media (max-width: 860px) {
+  .app { height: auto; }
+  main { grid-template-columns: 1fr; }
+  #plot-wrap { height: 68vh; min-height: 360px; }
+  input[type="search"] { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="app">
+  <header>
+    <h1>Norbornene Hansen Explorer</h1>
+    <div class="facts" id="facts">
+      <span>Loading monomer library…</span>
+    </div>
+  </header>
+
+  <div class="controls" role="group" aria-label="Plot controls">
+    <div class="field">
+      <label for="metric">Colour by</label>
+      <select id="metric">
+        <option value="ra_PTFE">Ra to PTFE (low = PTFE-like)</option>
+        <option value="ra_Water">Ra to water (high = repellent)</option>
+        <option value="ra_Diiodomethane">Ra to diiodomethane</option>
+        <option value="ra_n-Hexadecane">Ra to n-hexadecane</option>
+        <option value="D">δD dispersion</option>
+        <option value="P">δP polar</option>
+        <option value="H">δH hydrogen bonding</option>
+        <option value="mw">Molecular weight</option>
+        <option value="link">Linkage (ester / amide)</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="list">Highlight a top-25 list</label>
+      <select id="list"><option value="">None</option></select>
+    </div>
+    <div class="field">
+      <label for="search">Find SMILES fragment</label>
+      <input id="search" type="search" placeholder="e.g. C(C)(C)C or [Si]" autocomplete="off" spellcheck="false">
+    </div>
+    <label class="toggle"><input id="showSi" type="checkbox" checked> <span class="si-swatch">◆</span> Si monomers</label>
+    <label class="toggle"><input id="survOnly" type="checkbox"> Pass ranking filters only</label>
+    <label class="toggle"><input id="showRefs" type="checkbox" checked> Probe liquids &amp; your 6</label>
+    <div class="field">
+      <label for="size">Point size</label>
+      <input id="size" type="range" min="1" max="6" step="0.5" value="2">
+    </div>
+    <button id="reset" type="button">Reset view</button>
+    <span class="count" id="count"></span>
+  </div>
+
+  <main>
+    <div id="plot-wrap">
+      <div id="plot" aria-label="3D scatter of monomers in Hansen space"></div>
+      <div id="status">Unpacking 79,314 monomers…</div>
+    </div>
+    <aside id="inspector" aria-live="polite">
+      <h2 id="ins-title">Hover or click a point</h2>
+      <p class="hint" id="ins-hint">Hover a point to preview its structure and Hansen parameters. Click to pin it; drag to rotate, scroll to zoom, right-drag to pan.</p>
+      <div id="mol" hidden></div>
+      <div id="ins-body"></div>
+      <details>
+        <summary>About these values</summary>
+        <p id="about-method"></p>
+        <p>Si monomers are drawn as amber diamonds. Their values may not be reliable: the Si groups were fitted on 67 small Si compounds, only 7 of them measured, while these monomers are mostly TBS and TMS silyl ethers about four times larger.</p>
+        <p>Ra = √(4ΔδD² + ΔδP² + ΔδH²), in MPa½. Axes are plain δD, δP and δH, so on-screen distance is not Ra.</p>
+      </details>
+    </aside>
+  </main>
+</div>
+
+__LIB_PLOTLY__
+__LIB_SMILESDRAWER__
+<script type="application/octet-stream" id="hsp-data">__DATA_B64__</script>
+<script>
+(() => {
+  "use strict";
+  const $ = (s) => document.querySelector(s);
+  const plotEl = $("#plot");
+  const PROBE_LABEL = { "Water": "Water", "Diiodomethane": "Diiodomethane", "n-Hexadecane": "n-Hexadecane", "PTFE": "PTFE" };
+  let D = null, N = 0, sel = -1, hoverTimer = 0, drawer = null;
+  const state = { metric: "ra_PTFE", list: "", search: "", showSi: true, survOnly: false, showRefs: true, size: 2 };
+  const fmt = (v, d = 1) => (v === null || v === undefined || Number.isNaN(v)) ? "–" : v.toFixed(d);
+
+  function cssVar(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+  function isDark() {
+    const t = document.documentElement.getAttribute("data-theme");
+    if (t) return t === "dark";
+    return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  }
+  // low end of the scale is the eye-catching end in both themes
+  function scale(lowIsInteresting) {
+    const light = [[0, "#23154f"], [0.25, "#3b4b9e"], [0.5, "#3f8fb3"], [0.75, "#8cc5c9"], [1, "#dde8e5"]];
+    const dark = [[0, "#ffe08a"], [0.25, "#f3a35b"], [0.5, "#c25b7a"], [0.75, "#5b4a8a"], [1, "#2a3346"]];
+    const s = isDark() ? dark : light;
+    return lowIsInteresting ? s : s.map(([p], i) => [p, s[s.length - 1 - i][1]]);
+  }
+
+  async function loadData() {
+    const b64 = document.getElementById("hsp-data").textContent.trim();
+    if (!("DecompressionStream" in window)) throw new Error("This browser cannot unpack the data (needs DecompressionStream: Chrome 80+, Firefox 113+, Safari 16.4+).");
+    const bin = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+    const stream = new Blob([bin]).stream().pipeThrough(new DecompressionStream("gzip"));
+    return JSON.parse(await new Response(stream).text());
+  }
+
+  function ra(i, probe) {
+    const [rD, rP, rH] = D.probes[probe];
+    if (D.D[i] === null) return NaN;
+    return Math.sqrt(4 * (D.D[i] - rD) ** 2 + (D.P[i] - rP) ** 2 + (D.H[i] - rH) ** 2);
+  }
+  const METRICS = {
+    "ra_PTFE": { label: "Ra to PTFE", low: true, f: (i) => ra(i, "PTFE") },
+    "ra_Water": { label: "Ra to water", low: false, f: (i) => ra(i, "Water") },
+    "ra_Diiodomethane": { label: "Ra to CH₂I₂", low: false, f: (i) => ra(i, "Diiodomethane") },
+    "ra_n-Hexadecane": { label: "Ra to C₁₆", low: false, f: (i) => ra(i, "n-Hexadecane") },
+    "D": { label: "δD", low: false, f: (i) => D.D[i] },
+    "P": { label: "δP", low: false, f: (i) => D.P[i] },
+    "H": { label: "δH", low: false, f: (i) => D.H[i] },
+    "mw": { label: "MW", low: false, f: (i) => D.mw[i] },
+    "link": { label: "Linkage", cat: true, f: (i) => D.amide[i] },
+  };
+
+  function visibleIndices() {
+    const keep = [], keepSi = [];
+    for (let i = 0; i < N; i++) {
+      if (D.D[i] === null) continue;
+      if (state.survOnly && !D.surv[i]) continue;
+      if (D.si[i]) { if (state.showSi) keepSi.push(i); } else keep.push(i);
+    }
+    return [keep, keepSi];
+  }
+  function highlightIndices() {
+    let out = [];
+    if (state.list) {
+      const L = D.lists.find((l) => l.key === state.list);
+      if (L) out = L.idx.slice();
+    }
+    if (state.search.length >= 2) {
+      const q = state.search.toLowerCase();
+      const hits = [];
+      for (let i = 0; i < N && hits.length < 3000; i++) {
+        if (D.smi[i].toLowerCase().includes(q) || D.side[i].toLowerCase().includes(q)) hits.push(i);
+      }
+      out = state.list ? out.filter((i) => hits.includes(i)) : hits;
+    }
+    return out.filter((i) => (state.showSi || !D.si[i]) && (!state.survOnly || D.surv[i]));
+  }
+
+  function pointTrace(name, idx, metric, cmin, cmax, opts) {
+    const m = METRICS[metric];
+    const vals = idx.map(m.f);
+    const marker = {
+      size: opts.size, opacity: opts.opacity ?? 0.85, symbol: opts.symbol || "circle",
+      line: opts.line || { width: 0 },
+    };
+    if (m.cat) {
+      const ink = [cssVar("--muted"), cssVar("--accent")];
+      marker.color = vals.map((v) => ink[v]);
+    } else {
+      Object.assign(marker, { color: vals, cmin, cmax, colorscale: scale(m.low), showscale: !!opts.showscale });
+      if (opts.showscale) marker.colorbar = {
+        title: { text: m.label + (m.label.startsWith("Ra") || m.label.startsWith("δ") ? " / MPa½" : ""), side: "right", font: { size: 11 } },
+        thickness: 10, len: 0.6, x: 1.0, tickfont: { size: 10, color: cssVar("--muted") },
+      };
+    }
+    return {
+      type: "scatter3d", mode: "markers", name,
+      x: idx.map((i) => D.D[i]), y: idx.map((i) => D.P[i]), z: idx.map((i) => D.H[i]),
+      customdata: idx, marker,
+      hovertemplate: "δD %{x:.1f} · δP %{y:.1f} · δH %{z:.1f}<extra>" + (opts.tag || "") + "</extra>",
+    };
+  }
+
+  function render() {
+    const [main, si] = visibleIndices();
+    const m = METRICS[state.metric];
+    let cmin = 0, cmax = 1;
+    if (!m.cat) {
+      const all = main.concat(si).map(m.f).filter((v) => Number.isFinite(v)).sort((a, b) => a - b);
+      cmin = all[Math.floor(all.length * 0.01)]; cmax = all[Math.floor(all.length * 0.99)];
+    }
+    const traces = [
+      pointTrace("Monomers", main, state.metric, cmin, cmax, { size: state.size, showscale: true }),
+      pointTrace("Si monomers (may not be reliable)", si, state.metric, cmin, cmax,
+        { size: state.size + 1.5, symbol: "diamond", tag: "Si: may not be reliable", line: { width: 0.6, color: cssVar("--si") } }),
+    ];
+    const hl = highlightIndices();
+    traces.push({
+      type: "scatter3d", mode: "markers", name: hl.length ? `Highlighted (${hl.length})` : "Highlighted",
+      x: hl.map((i) => D.D[i]), y: hl.map((i) => D.P[i]), z: hl.map((i) => D.H[i]), customdata: hl,
+      marker: { size: state.size + 5, symbol: "circle-open", color: cssVar("--hl"), line: { width: 2, color: cssVar("--hl") } },
+      hovertemplate: "δD %{x:.1f} · δP %{y:.1f} · δH %{z:.1f}<extra>highlighted</extra>",
+      showlegend: hl.length > 0,
+    });
+    if (state.showRefs) {
+      const pn = Object.keys(D.probes);
+      traces.push({
+        type: "scatter3d", mode: "markers+text", name: "Probe liquids & PTFE",
+        x: pn.map((k) => D.probes[k][0]), y: pn.map((k) => D.probes[k][1]), z: pn.map((k) => D.probes[k][2]),
+        text: pn.map((k) => PROBE_LABEL[k] || k), customdata: pn.map((k) => "probe:" + k),
+        textposition: "top center", textfont: { size: 11, color: cssVar("--ink") },
+        marker: { size: 7, symbol: "square", color: cssVar("--ink") },
+        hovertemplate: "%{text}: δD %{x:.1f} · δP %{y:.1f} · δH %{z:.1f}<extra></extra>",
+      });
+      traces.push({
+        type: "scatter3d", mode: "markers+text", name: "Your 6 molecules",
+        x: D.six.map((s) => s.D), y: D.six.map((s) => s.P), z: D.six.map((s) => s.H),
+        text: D.six.map((s) => s.id.split(" ")[0]), customdata: D.six.map((_, k) => "six:" + k),
+        textposition: "middle right", textfont: { size: 12, color: cssVar("--hl") },
+        marker: { size: 6, symbol: "cross", color: cssVar("--hl") },
+        hovertemplate: "molecule %{text}<extra></extra>",
+      });
+    }
+    if (sel >= 0) traces.push({
+      type: "scatter3d", mode: "markers", name: "Pinned", x: [D.D[sel]], y: [D.P[sel]], z: [D.H[sel]],
+      customdata: [sel], marker: { size: 11, symbol: "diamond-open", color: cssVar("--accent"), line: { width: 3, color: cssVar("--accent") } },
+      hoverinfo: "skip",
+    });
+    const grid = cssVar("--line"), ink = cssVar("--ink"), muted = cssVar("--muted");
+    const axis = (t) => ({ title: { text: t, font: { size: 12, color: ink } }, gridcolor: grid, zerolinecolor: grid,
+      linecolor: grid, tickfont: { size: 10, color: muted }, backgroundcolor: "rgba(0,0,0,0)", showbackground: false });
+    const layout = {
+      uirevision: "keep", paper_bgcolor: "rgba(0,0,0,0)", plot_bgcolor: "rgba(0,0,0,0)",
+      margin: { l: 0, r: 0, t: 0, b: 0 }, font: { family: getComputedStyle(document.body).fontFamily, color: ink },
+      showlegend: true, legend: { x: 0.01, y: 0.99, bgcolor: "rgba(0,0,0,0)", font: { size: 11, color: ink } },
+      scene: { xaxis: axis("δD / MPa½"), yaxis: axis("δP / MPa½"), zaxis: axis("δH / MPa½"),
+               aspectmode: "cube", camera: { eye: { x: 1.6, y: -1.6, z: 0.9 } } },
+      hoverlabel: { bgcolor: cssVar("--surface"), bordercolor: grid, font: { color: ink, size: 12 } },
+    };
+    Plotly.react(plotEl, traces, layout, { responsive: true, displaylogo: false, scrollZoom: true,
+      modeBarButtonsToRemove: ["toImage", "resetCameraLastSave3d"] });
+    const shown = main.length + si.length;
+    $("#count").textContent = `${shown.toLocaleString()} shown` + (hl.length ? ` · ${hl.length} highlighted` : "");
+  }
+
+  function drawMolecule(smiles) {
+    const box = $("#mol");
+    box.hidden = false;
+    box.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" id="mol-svg"></svg>';
+    try {
+      if (!drawer) drawer = new SmilesDrawer.SvgDrawer({ width: 320, height: 230, padding: 12, compactDrawing: false });
+      SmilesDrawer.parse(smiles, (tree) => {
+        drawer.draw(tree, "mol-svg", isDark() ? "dark" : "light", false);
+        const svg = $("#mol-svg");
+        if (svg) { svg.style.background = "transparent"; svg.removeAttribute("width"); svg.removeAttribute("height"); }
+      }, () => { box.innerHTML = '<p class="hint" style="padding:10px">This structure could not be drawn.</p>'; });
+    } catch (e) {
+      box.innerHTML = '<p class="hint" style="padding:10px">This structure could not be drawn.</p>';
+    }
+  }
+
+  function raTable(vals) {
+    return '<table class="hsp"><tr><th>Hansen distance</th><th>Ra / MPa½</th></tr>' +
+      Object.keys(D.probes).map((k) => `<tr><td>to ${PROBE_LABEL[k] || k}</td><td>${fmt(vals[k])}</td></tr>`).join("") + "</table>";
+  }
+  function big3(dD, dP, dH) {
+    return `<div class="big3"><div><span>δD</span><b>${fmt(dD)}</b></div><div><span>δP</span><b>${fmt(dP)}</b></div><div><span>δH</span><b>${fmt(dH)}</b></div></div>`;
+  }
+  function copyBtn(text) {
+    const b = document.createElement("button");
+    b.type = "button"; b.textContent = "Copy SMILES";
+    b.addEventListener("click", () => {
+      const done = () => { b.textContent = "Copied"; setTimeout(() => (b.textContent = "Copy SMILES"), 1400); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, () => selectSmiles());
+      } else selectSmiles();
+    });
+    return b;
+  }
+  function selectSmiles() {
+    const el = $("#ins-body .smiles"); if (!el) return;
+    const r = document.createRange(); r.selectNodeContents(el);
+    const s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+  }
+
+  function showMonomer(i, pinned) {
+    $("#ins-title").textContent = pinned ? "Pinned monomer" : "Monomer";
+    $("#ins-hint").hidden = true;
+    drawMolecule(D.smi[i]);
+    const vals = {}; Object.keys(D.probes).forEach((k) => (vals[k] = ra(i, k)));
+    const ranks = D.lists.map((l) => [l, l.idx.indexOf(i)]).filter(([, r]) => r >= 0)
+      .map(([l, r]) => `<span class="chip ${l.si ? "si" : "ok"}">#${r + 1} ${l.label}</span>`).join("");
+    const vendor = D.vend[i] >= 0 ? D.vendors[D.vend[i]] : "";
+    const chips = [
+      `<span class="chip">${D.amide[i] ? "amide" : "ester"}</span>`,
+      D.type[i] >= 0 ? `<span class="chip">${D.types[D.type[i]].replace(",", " + ")}</span>` : "",
+      D.mw[i] ? `<span class="chip">MW ${fmt(D.mw[i])}</span>` : "",
+      D.surv[i] ? '<span class="chip ok">passes ranking filters</span>' : '<span class="chip">outside ranking filters</span>',
+      D.si[i] ? '<span class="chip si">Si: may not be reliable</span>' : "",
+      D.pool[i] ? '<span class="chip">rare atom type</span>' : "",
+    ].join("");
+    const body = $("#ins-body");
+    body.innerHTML =
+      (D.si[i] ? '<p class="warn">Si monomer: these values may not be reliable. The Si groups rest on 7 measured, much smaller Si compounds.</p>' : "") +
+      big3(D.D[i], D.P[i], D.H[i]) +
+      `<div class="row">${chips}</div>` +
+      (ranks ? `<div><div class="lbl">In top-25 lists</div><div class="row">${ranks}</div></div>` : "") +
+      raTable(vals) +
+      `<div><div class="lbl">Monomer SMILES</div><pre class="smiles"></pre></div>` +
+      (D.side[i] ? `<div><div class="lbl">Side-chain reagent</div><pre class="smiles side"></pre></div>` : "") +
+      `<div class="row" id="ins-actions"></div>` +
+      (vendor ? `<p class="hint">Catalogue: ${vendor}${D.link[i] ? ` · <a href="${D.link[i]}" target="_blank" rel="noopener">product page</a>` : ""}</p>` : "");
+    body.querySelector(".smiles").textContent = D.smi[i];
+    const side = body.querySelector(".smiles.side"); if (side) side.textContent = D.side[i];
+    body.querySelector("#ins-actions").appendChild(copyBtn(D.smi[i]));
+    if (pinned) {
+      const u = document.createElement("button"); u.type = "button"; u.textContent = "Unpin";
+      u.addEventListener("click", () => { sel = -1; render(); clearInspector(); });
+      body.querySelector("#ins-actions").appendChild(u);
+    }
+  }
+  function showSpecial(tag) {
+    $("#ins-hint").hidden = true;
+    if (tag.startsWith("probe:")) {
+      const k = tag.slice(6), [dD, dP, dH] = D.probes[k];
+      $("#ins-title").textContent = PROBE_LABEL[k] || k;
+      $("#mol").hidden = true;
+      $("#ins-body").innerHTML = big3(dD, dP, dH) +
+        `<p class="hint">${k === "PTFE" ? "Target polymer. Monomers close to this point are PTFE-like." : "Probe liquid used for the repellency rankings."}</p>`;
+    } else {
+      const s = D.six[+tag.slice(4)];
+      $("#ins-title").textContent = "Requested: " + s.id;
+      drawMolecule(s.smi);
+      const vals = {}; Object.entries(D.probes).forEach(([k, [rD, rP, rH]]) => (vals[k] = Math.sqrt(4 * (s.D - rD) ** 2 + (s.P - rP) ** 2 + (s.H - rH) ** 2)));
+      $("#ins-body").innerHTML = big3(s.D, s.P, s.H) + raTable(vals) + '<div><div class="lbl">SMILES</div><pre class="smiles"></pre></div>';
+      $("#ins-body .smiles").textContent = s.smi;
+    }
+  }
+  function clearInspector() {
+    $("#ins-title").textContent = "Hover or click a point";
+    $("#ins-hint").hidden = false; $("#mol").hidden = true; $("#ins-body").innerHTML = "";
+  }
+  function onPoint(ev, pinned) {
+    const p = ev && ev.points && ev.points[0]; if (!p) return;
+    const c = p.customdata;
+    if (typeof c === "number") {
+      if (pinned) { sel = c; render(); }
+      showMonomer(c, pinned);
+    } else if (typeof c === "string") showSpecial(c);
+  }
+
+  function wire() {
+    const on = (id, ev, fn) => $(id).addEventListener(ev, fn);
+    on("#metric", "change", (e) => { state.metric = e.target.value; render(); });
+    on("#list", "change", (e) => { state.list = e.target.value; render(); });
+    let st = 0;
+    on("#search", "input", (e) => { clearTimeout(st); st = setTimeout(() => { state.search = e.target.value.trim(); render(); }, 250); });
+    on("#showSi", "change", (e) => { state.showSi = e.target.checked; render(); });
+    on("#survOnly", "change", (e) => { state.survOnly = e.target.checked; render(); });
+    on("#showRefs", "change", (e) => { state.showRefs = e.target.checked; render(); });
+    on("#size", "input", (e) => { state.size = +e.target.value; render(); });
+    on("#reset", "click", () => Plotly.relayout(plotEl, { "scene.camera": { eye: { x: 1.6, y: -1.6, z: 0.9 }, center: { x: 0, y: 0, z: 0 }, up: { x: 0, y: 0, z: 1 } } }));
+    plotEl.on("plotly_hover", (ev) => { clearTimeout(hoverTimer); hoverTimer = setTimeout(() => onPoint(ev, false), 60); });
+    plotEl.on("plotly_unhover", () => { clearTimeout(hoverTimer); if (sel >= 0) setTimeout(() => showMonomer(sel, true), 80); });
+    plotEl.on("plotly_click", (ev) => onPoint(ev, true));
+    const rerender = () => { render(); if (sel >= 0) showMonomer(sel, true); };
+    if (window.matchMedia) window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", rerender);
+    new MutationObserver(rerender).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  }
+
+  function fillLists() {
+    const sel = $("#list");
+    const groups = [["Main rankings (non-Si)", false], ["Si-only rankings (may not be reliable)", true]];
+    for (const [label, si] of groups) {
+      const g = document.createElement("optgroup"); g.label = label;
+      D.lists.filter((l) => l.si === si).forEach((l) => {
+        const o = document.createElement("option"); o.value = l.key; o.textContent = l.label; g.appendChild(o);
+      });
+      if (g.children.length) sel.appendChild(g);
+    }
+  }
+
+  async function start() {
+    try {
+      D = await loadData();
+    } catch (e) {
+      $("#status").textContent = "Could not load the data. " + e.message;
+      return;
+    }
+    N = D.n;
+    const nSi = D.si.reduce((a, b) => a + b, 0), nSurv = D.surv.reduce((a, b) => a + b, 0);
+    $("#facts").innerHTML =
+      `<span><b>${N.toLocaleString()}</b> monomers</span>` +
+      `<span><b>${nSi}</b> containing Si</span>` +
+      `<span><b>${nSurv.toLocaleString()}</b> pass the ranking filters</span>` +
+      `<span>v3 group-contribution formula · expected Ra error ≈ <b>${D.meta.medRa}</b> MPa½</span>`;
+    $("#about-method").textContent =
+      `Values come from the v3 size-intensive group-contribution formula, δk = √(Σ Nᵢ eₖ,ᵢ / Σ Nᵢ vᵢ), with Stefanis–Panayiotou functional groups and group values refitted on HSPiP. ` +
+      `On ${D.meta.nCV} held-out curated compounds (scaffold-grouped cross-validation) the median Ra error was ${D.meta.medRa} MPa½, with mean absolute errors of ${D.meta.maeD} / ${D.meta.maeP} / ${D.meta.maeH} for δD / δP / δH. ` +
+      `These are predictions, not measurements. Built ${D.meta.built}.`;
+    fillLists();
+    if (typeof Plotly === "undefined") { $("#status").textContent = "The plotting library did not load. Check the internet connection and reload."; return; }
+    $("#status").hidden = true;
+    wire();
+    render();
+  }
+  start();
+})();
+</script>
