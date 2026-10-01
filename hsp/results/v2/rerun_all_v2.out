@@ -1,0 +1,15 @@
+
+The following have been reloaded with a version change:
+  1) ipykernel/2026a => ipykernel/2024a
+  2) scipy-stack/2026a => scipy-stack/2024a
+
+                    n  med_Ra_err  p90_Ra_err  SP_med_Ra_err
+tier confidence                                             
+1    low          655        3.74        7.19           4.02
+     medium       332        2.74        5.05           3.34
+     high         120        2.26        4.37           2.71
+2    low         4353        1.87        4.45           4.10
+     medium      3073        1.38        3.06           3.69
+     high         819        1.13        2.47           3.72
+tier-1 MAE D,P,H (use as --method_aae): 0.9,2.04,1.68
+tier-2 >30 heavy atoms MAE D,P,H: [0.79, 1.47, 1.54] n = 142

@@ -1,0 +1,31 @@
+variant,tier,cls,n,MAE_D,MAE_P,MAE_H,med_Ra,neg
+current,master,all,754,0.628,2.265,1.763,3.11,0.021
+current,master,fused/bridged aliphatic,16,0.801,2.969,1.655,4.206,0.125
+current,master,mono/isolated rings,312,0.679,2.605,1.755,3.456,0.006
+current,10k_YMB,all,6630,1.04,2.257,2.363,3.73,0.086
+current,10k_YMB,fused/bridged aliphatic,547,1.236,3.09,3.066,4.341,0.243
+current,10k_YMB,mono/isolated rings,2476,1.058,2.475,2.326,3.862,0.063
+current+floor,master,all,754,0.628,2.258,1.761,3.105,0.0
+current+floor,master,fused/bridged aliphatic,16,0.801,2.925,1.655,4.176,0.0
+current+floor,master,mono/isolated rings,312,0.679,2.605,1.754,3.456,0.0
+current+floor,10k_YMB,all,6630,1.04,2.175,2.34,3.652,0.0
+current+floor,10k_YMB,fused/bridged aliphatic,547,1.236,2.808,3.063,4.133,0.0
+current+floor,10k_YMB,mono/isolated rings,2476,1.058,2.42,2.316,3.841,0.0
+fixes+floor,master,all,754,0.622,2.137,1.748,3.055,0.0
+fixes+floor,master,fused/bridged aliphatic,16,0.672,3.177,1.635,4.281,0.0
+fixes+floor,master,mono/isolated rings,312,0.67,2.31,1.724,3.338,0.0
+fixes+floor,10k_YMB,all,6630,1.012,2.154,2.316,3.57,0.0
+fixes+floor,10k_YMB,fused/bridged aliphatic,547,1.17,2.842,3.157,3.956,0.0
+fixes+floor,10k_YMB,mono/isolated rings,2476,0.999,2.359,2.234,3.647,0.0
+fixes+per_system+floor,master,all,754,0.622,2.142,1.748,3.055,0.0
+fixes+per_system+floor,master,fused/bridged aliphatic,16,0.705,3.419,1.643,4.809,0.0
+fixes+per_system+floor,master,mono/isolated rings,312,0.67,2.31,1.724,3.338,0.0
+fixes+per_system+floor,10k_YMB,all,6630,1.022,2.169,2.311,3.562,0.0
+fixes+per_system+floor,10k_YMB,fused/bridged aliphatic,547,1.288,3.019,3.099,4.061,0.0
+fixes+per_system+floor,10k_YMB,mono/isolated rings,2476,0.999,2.359,2.234,3.647,0.0
+fixes+isolated_only+floor,master,all,754,0.624,2.159,1.749,3.08,0.0
+fixes+isolated_only+floor,master,fused/bridged aliphatic,16,0.775,4.218,1.712,5.002,0.0
+fixes+isolated_only+floor,master,mono/isolated rings,312,0.67,2.31,1.724,3.338,0.0
+fixes+isolated_only+floor,10k_YMB,all,6630,1.036,2.254,2.308,3.639,0.0
+fixes+isolated_only+floor,10k_YMB,fused/bridged aliphatic,547,1.454,4.05,3.058,4.979,0.0
+fixes+isolated_only+floor,10k_YMB,mono/isolated rings,2476,0.999,2.359,2.234,3.647,0.0

@@ -1,0 +1,91 @@
+
+The following have been reloaded with a version change:
+  1) ipykernel/2026a => ipykernel/2024a
+  2) scipy-stack/2026a => scipy-stack/2024a
+
+structures 9068  groups 145 (new 24, Si 6)  scaffolds 483
+fold 0 done
+fold 1 done
+fold 2 done
+fold 3 done
+fold 4 done
+
+== grid (tier 1, all) ==
+                  model  tier subset   n  MAE_D  MAE_P  MAE_H  med_Ra_err
+ Fedors_refit_l3.0_w5.0     1    all 961  0.584  1.923  1.975       2.833
+ Fedors_refit_l0.3_w5.0     1    all 961  0.609  1.899  1.938       2.848
+ Fedors_refit_l0.3_w1.0     1    all 961  0.594  1.914  2.154       2.965
+ Fedors_refit_l3.0_w1.0     1    all 961  0.585  1.964  2.218       3.005
+Fedors_refit_l30.0_w5.0     1    all 961  0.800  2.165  2.408       3.507
+     SP_refit_l0.3_w5.0     1    all 961  1.044  2.003  1.997       3.641
+    SP_refit_l30.0_w5.0     1    all 961  1.024  1.986  2.005       3.647
+     SP_refit_l3.0_w5.0     1    all 961  1.040  1.987  1.997       3.654
+     SP_refit_l3.0_w1.0     1    all 961  1.031  1.942  2.099       3.668
+    SP_refit_l30.0_w1.0     1    all 961  1.015  1.917  2.108       3.668
+     SP_refit_l0.3_w1.0     1    all 961  1.035  1.974  2.102       3.687
+Fedors_refit_l30.0_w1.0     1    all 961  0.904  2.328  2.735       3.899
+
+== comparison, best settings ==
+                 model  tier           subset    n  MAE_D  MAE_P  MAE_H  med_Ra_err
+              SP_paper     1  >30 heavy atoms    5  0.547  1.363  1.257       1.827
+                XGB_fp     1  >30 heavy atoms    5  0.320  1.431  0.602       1.866
+    SP_refit_l0.3_w5.0     1  >30 heavy atoms    5  1.205  0.831  1.126       1.871
+            XGB_groups     1  >30 heavy atoms    5  0.720  1.343  1.087       2.284
+                 ET_fp     1  >30 heavy atoms    5  0.745  1.347  1.198       2.453
+Fedors_refit_l3.0_w5.0     1  >30 heavy atoms    5  0.266  1.616  1.621       2.545
+Fedors_refit_l3.0_w5.0     1               Si    7  0.761  1.184  0.898       2.138
+            XGB_groups     1               Si    7  1.008  0.573  1.072       2.667
+    SP_refit_l0.3_w5.0     1               Si    7  1.342  2.935  2.875       4.626
+                XGB_fp     1               Si    7  1.927  1.569  1.815       6.094
+                 ET_fp     1               Si    7  2.730  1.562  2.350       8.716
+              SP_paper     1               Si    7  2.302  9.898  3.369       9.838
+Fedors_refit_l3.0_w5.0     1              all  961  0.584  1.923  1.975       2.833
+                XGB_fp     1              all  961  0.864  1.766  1.428       3.049
+              SP_paper     1              all  961  0.753  2.451  1.874       3.339
+            XGB_groups     1              all  961  0.833  1.979  1.938       3.399
+    SP_refit_l0.3_w5.0     1              all  961  1.044  2.003  1.997       3.641
+                 ET_fp     1              all  961  1.254  1.907  1.563       3.955
+Fedors_refit_l3.0_w5.0     1            other  927  0.587  1.929  1.982       2.842
+                XGB_fp     1            other  927  0.867  1.764  1.417       3.053
+              SP_paper     1            other  927  0.736  2.385  1.864       3.297
+            XGB_groups     1            other  927  0.838  1.976  1.949       3.411
+    SP_refit_l0.3_w5.0     1            other  927  1.049  1.992  1.990       3.639
+                 ET_fp     1            other  927  1.262  1.916  1.553       3.973
+                 ET_fp     1 polycyclic_aliph   22  0.569  1.754  1.838       2.870
+                XGB_fp     1 polycyclic_aliph   22  0.519  2.014  1.923       2.960
+Fedors_refit_l3.0_w5.0     1 polycyclic_aliph   22  0.485  1.973  2.108       3.071
+            XGB_groups     1 polycyclic_aliph   22  0.559  2.688  1.938       3.539
+    SP_refit_l0.3_w5.0     1 polycyclic_aliph   22  0.708  2.443  2.229       3.981
+              SP_paper     1 polycyclic_aliph   22  1.031  3.092  1.973       4.262
+                XGB_fp     2  >30 heavy atoms  111  0.452  1.169  1.120       1.568
+Fedors_refit_l3.0_w5.0     2  >30 heavy atoms  111  0.589  1.216  1.582       1.628
+            XGB_groups     2  >30 heavy atoms  111  0.612  1.080  1.381       1.985
+                 ET_fp     2  >30 heavy atoms  111  0.882  1.372  1.591       2.020
+    SP_refit_l0.3_w5.0     2  >30 heavy atoms  111  2.177  1.706  2.855       4.419
+              SP_paper     2  >30 heavy atoms  111  2.846  3.633  6.572       5.999
+            XGB_groups     2               Si   44  0.825  0.776  0.771       1.662
+Fedors_refit_l3.0_w5.0     2               Si   44  0.586  0.987  1.365       1.896
+                XGB_fp     2               Si   44  1.850  2.113  1.472       4.465
+    SP_refit_l0.3_w5.0     2               Si   44  1.746  2.164  2.673       4.819
+                 ET_fp     2               Si   44  2.744  2.185  2.078       6.644
+              SP_paper     2               Si   44  2.191  7.145  3.573       6.927
+                XGB_fp     2              all 8107  0.448  0.971  0.759       1.443
+Fedors_refit_l3.0_w5.0     2              all 8107  0.347  1.085  1.130       1.516
+            XGB_groups     2              all 8107  0.467  1.048  1.034       1.657
+                 ET_fp     2              all 8107  0.820  1.031  0.833       2.036
+    SP_refit_l0.3_w5.0     2              all 8107  0.694  1.390  1.485       2.355
+              SP_paper     2              all 8107  1.051  2.410  2.387       3.711
+                XGB_fp     2            other 7295  0.455  0.962  0.759       1.463
+Fedors_refit_l3.0_w5.0     2            other 7295  0.341  1.066  1.125       1.486
+            XGB_groups     2            other 7295  0.474  1.046  1.055       1.686
+                 ET_fp     2            other 7295  0.840  1.030  0.829       2.098
+    SP_refit_l0.3_w5.0     2            other 7295  0.674  1.394  1.471       2.364
+              SP_paper     2            other 7295  0.997  2.297  2.229       3.645
+                XGB_fp     2 polycyclic_aliph  657  0.273  0.954  0.648       1.102
+                 ET_fp     2 polycyclic_aliph  657  0.451  0.909  0.665       1.164
+            XGB_groups     2 polycyclic_aliph  657  0.331  1.084  0.760       1.347
+Fedors_refit_l3.0_w5.0     2 polycyclic_aliph  657  0.351  1.278  1.101       1.801
+    SP_refit_l0.3_w5.0     2 polycyclic_aliph  657  0.598  1.236  1.333       2.019
+              SP_paper     2 polycyclic_aliph  657  1.267  3.150  3.356       4.175
+
+best: {'SP_refit': (0.3, 5.0, 'SP_refit_l0.3_w5.0'), 'Fedors_refit': (3.0, 5.0, 'Fedors_refit_l3.0_w5.0')}

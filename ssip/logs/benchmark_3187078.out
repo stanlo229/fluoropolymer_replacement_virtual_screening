@@ -1,0 +1,25 @@
+============================================================
+SSIP benchmark started: Wed Apr 15 08:52:28 PM EDT 2026
+Node:    kn146
+GPU:     NVIDIA L40S
+Workdir: /home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/runs/benchmark_01
+============================================================
+Wrote 15 benchmark molecules to /home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/runs/benchmark_01/library.csv
+Running stages: ['geom', 'charges', 'surfaces', 'calibrate', 'footprint']
+Working directory: /scratch/stanlo/Repos/fluoropolymer_replacement_virtual_screening/runs/benchmark_01
+
+[geom] Optimising 15 molecules with MACE-OFF23 …
+[geom] Converged: 15/15  Errors: 0
+  [geom] completed in 1.4s
+
+[charges] Predicting AIMNet2 charges for 15 molecules …
+Found model file: /scratch/stanlo/Repos/aimnet2calc/aimnet2calc/assets/aimnet2/aimnet2_wb97m_0.jpt
+[DEBUG] aimnet2calc Route 1 failed: 'AIMNet2Calculator' object has no attribute 'to'
+Downloading: "https://github.com/isayevlab/AIMNet2/zipball/main" to /home/stanlo/.cache/torch/hub/main.zip
+============================================================
+Pipeline finished: Wed Apr 15 08:52:40 PM EDT 2026  (exit 1)
+WARNING: ssip_results.csv not found — pipeline may have failed
+============================================================
+Done: Wed Apr 15 08:52:40 PM EDT 2026
+Results dir: /home/stanlo/scratch/Repos/fluoropolymer_replacement_virtual_screening/runs/benchmark_01
+============================================================

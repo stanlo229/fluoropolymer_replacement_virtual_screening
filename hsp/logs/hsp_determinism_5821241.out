@@ -1,0 +1,10 @@
+
+The following have been reloaded with a version change:
+  1) ipykernel/2026a => ipykernel/2024a
+  2) scipy-stack/2026a => scipy-stack/2024a
+
+run with n_jobs=16 done
+run with n_jobs=16 done
+run with n_jobs=4 done
+run1 vs run2 (same settings) max |diff|: 7.105427357601002e-15
+run1 vs run3 (n_jobs=4)      max |diff|: 7.105427357601002e-15

@@ -1,0 +1,17 @@
+monomers: 79314  Si: 307  expected Ra err (tier-1 CV): 2.833
+D/P/H quantiles (non-Si):
+          D      P      H
+0.00  15.45   1.32   0.00
+0.01  16.80   3.20   3.44
+0.50  19.58   8.26   6.95
+0.99  21.43  13.56  13.25
+1.00  23.40  18.12  24.57
+monomers with pooled (rare) atoms: 162
+Si monomers D range: {'min': 14.19, '50%': 16.66, 'max': 20.04}
+                              id     D     P     H  Ra_PTFE  SPrefit_D  SPrefit_P  SPrefit_H
+          1 cholesteryl NB ester 17.10  1.85  2.17     9.25      17.75       1.08       0.77
+  2 bis(2-ethylhexyl) NB diester 16.63  3.38  3.99     9.44      16.47       2.79       2.94
+3 bis(2-hydroxyethyl) NB diester 17.96  7.44 13.86    18.93      18.02       8.32      18.22
+  4 bis(2-cyanoethyl) NB diester 17.83 10.81  6.79    16.38      18.15      16.47       6.09
+           5 tert-butyl NB ester 16.37  3.63  4.25     9.23      16.23       2.18       4.29
+       6 2-hydroxyethyl NB ester 17.85  6.24 11.53    16.68      17.60       6.55      11.86
