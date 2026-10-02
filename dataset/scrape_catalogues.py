@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """
-Scrape chemical catalogues via PubChem for monoalcohols, diols, and monoamines
-with MW < 500, no fluorine, no organometallics, no chiral centres.
+Scrape chemical catalogues via PubChem for monoalcohols, diols, monoamines and
+dendrons (one focal OH or amine), with no fluorine and no organometallics.
+Chiral compounds are allowed since 2026-10-02 (--exclude_chiral restores the old
+rule). There is no MW limit by default (--max_mw restores one; the
+original 2026-04 library used MW < 500, kept as catalogues_v1_mw500.csv).
 
 Vendors: Sigma-Aldrich, Ambeed, Combi-Blocks, TCI, Thermo Fisher Scientific,
          Oakwood Products, Matrix Scientific.
@@ -15,10 +18,10 @@ Output CSV columns: smiles, canonical_smiles, source, link, molecular_weight,
                     compound_type, purity, price_per_gram
 
 Hard filters applied (any match → compound rejected):
-  • MW ≥ 500
+  • MW >= --max_mw (only if given; default: no limit)
   • Any fluorine
   • Any metal (organometallics)
-  • Any chiral centre (assigned or unassigned)
+  • Any chiral centre (only with --exclude_chiral; allowed by default)
 
 Usage:
     python scrape_catalogues.py --output results.csv
@@ -35,6 +38,8 @@ from pathlib import Path
 
 import pandas as pd
 import requests
+
+import dendrons as dd
 from rdkit import Chem
 from rdkit.Chem import Descriptors
 from tqdm import tqdm
@@ -101,25 +106,33 @@ _METAL = Chem.MolFromSmarts(
 )
 
 
+MAX_MW: float | None = None      # set from --max_mw in main(); None = no limit
+EXCLUDE_CHIRAL = False           # set from --exclude_chiral in main()
+
+
 def _has_chiral_centre(mol) -> bool:
     return bool(Chem.FindMolChiralCenters(mol, includeUnassigned=True))
 
 
-def classify(mol) -> list:
+def classify(mol) -> tuple[list, "dd.DendronInfo | None"]:
     """
-    Return list of matching compound types from {'monoalcohol', 'diol', 'monoamine'},
-    or empty list if the compound fails any hard filter (MW, S, F).
+    Return (types, dendron_info). types is drawn from {'monoalcohol', 'diol',
+    'monoamine', 'dendron_alcohol', 'dendron_amine'}; empty if the compound fails
+    a hard filter (fragments, MW if --max_mw, F, metals, chirality if --exclude_chiral).
+
+    Ordinary side groups need exactly 1 OH, 2 OH or 1 amine. Dendrons pass on a
+    single focal OH / amine (dendrons.py) whatever their periphery.
     """
     if len(Chem.GetMolFrags(mol)) > 1:
-        return []
-    if Descriptors.MolWt(mol) >= 500:
-        return []
+        return [], None
+    if MAX_MW is not None and Descriptors.MolWt(mol) >= MAX_MW:
+        return [], None
     if sum(a.GetAtomicNum() == 9 for a in mol.GetAtoms()) > 0:
-        return []
+        return [], None
     if mol.HasSubstructMatch(_METAL):
-        return []
-    if _has_chiral_centre(mol):
-        return []
+        return [], None
+    if EXCLUDE_CHIRAL and _has_chiral_centre(mol):
+        return [], None
     oh = len(mol.GetSubstructMatches(_ALCOHOL))
     n  = len(mol.GetSubstructMatches(_AMINE))
     types = []
@@ -129,17 +142,39 @@ def classify(mol) -> list:
         types.append("diol")
     if n == 1:
         types.append("monoamine")
-    return types
+    info = dd.analyse(mol)
+    if info.is_dendron:
+        if info.focal_alcohol is not None:
+            types.append("dendron_alcohol")
+        if info.focal_amine is not None:
+            types.append("dendron_amine")
+    usable = "dendron_alcohol" in types or "dendron_amine" in types
+    return types, (info if usable else None)
+
+
+def focal_mapped_smiles(mol, info) -> str:
+    """SMILES with the focal OH O as atom map 1 and the focal amine N as map 2."""
+    m = Chem.Mol(mol)
+    if info.focal_alcohol is not None:
+        m.GetAtomWithIdx(info.focal_alcohol).SetAtomMapNum(1)
+    if info.focal_amine is not None:
+        m.GetAtomWithIdx(info.focal_amine).SetAtomMapNum(2)
+    return Chem.MolToSmiles(m)
 
 
 def build_row(isomeric_smiles: str, source: str, sburl: str, types: list,
               purity: float | None = None,
-              price_per_gram: float | None = None) -> dict | None:
+              price_per_gram: float | None = None,
+              dendron: "dd.DendronInfo | None" = None) -> dict | None:
     mol = Chem.MolFromSmiles(isomeric_smiles)
     if mol is None:
         return None
     canon = Chem.MolToSmiles(mol)
     return {
+        "is_dendron":         dendron is not None,
+        "dendron_family":     dendron.family if dendron else "",
+        "dendron_generation": dendron.generation if dendron else 0,
+        "focal_mapped_smiles": focal_mapped_smiles(mol, dendron) if dendron else "",
         "smiles":           isomeric_smiles,
         "canonical_smiles": canon,
         "source":           source,
@@ -379,11 +414,13 @@ def fetch_sid_details(sids: list, batch_size: int = 100) -> list:
 
 def fetch_compound_props(cids: list, batch_size: int = 100) -> dict:
     """
-    Return dict cid → {smiles, mw}.  Compounds with MW ≥ 500 are dropped here
-    to avoid wasting RDKit calls.
+    Return dict cid → {smiles, mw}.  With --max_mw, heavier compounds are
+    dropped here to avoid wasting RDKit calls.
     """
     props = {}
     batches = [cids[i:i + batch_size] for i in range(0, len(cids), batch_size)]
+    if not batches:
+        return props
 
     for batch in tqdm(batches, desc="  Fetching properties", unit="batch"):
         cid_str = ",".join(str(c) for c in batch)
@@ -400,7 +437,7 @@ def fetch_compound_props(cids: list, batch_size: int = 100) -> dict:
 
         for prop in data.get("PropertyTable", {}).get("Properties", []):
             mw = float(prop.get("MolecularWeight", 9999))
-            if mw >= 500:
+            if MAX_MW is not None and mw >= MAX_MW:
                 continue
             cid = prop.get("CID")
             # PubChem returns IsomericSMILES as "SMILES" when there is no
@@ -441,7 +478,8 @@ def process_vendor(vendor_name: str, source_name: str, args) -> pd.DataFrame:
 
     safe = vendor_name.replace("/", "_").replace(" ", "_")
     sid_path  = ckpt / f"{safe}_sids.json"
-    prop_path = ckpt / f"{safe}_props.csv"
+    prop_path = ckpt / f"{safe}_props.csv"            # 2026-04 run: MW < 500 only
+    prop_all_path = ckpt / f"{safe}_props_all.csv"    # no MW limit
 
     # ---- Step 1+2: SID listing + SID details --------------------------------
     if args.resume and sid_path.exists():
@@ -466,7 +504,26 @@ def process_vendor(vendor_name: str, source_name: str, args) -> pd.DataFrame:
         return pd.DataFrame()
 
     # ---- Step 3: Compound properties ----------------------------------------
-    if args.resume and prop_path.exists():
+    if MAX_MW is None and args.resume and prop_all_path.exists():
+        print(f"[{vendor_name}] Resuming: loading properties from {prop_all_path}", flush=True)
+        prop_df = _load_checkpoint(prop_all_path)
+        props = {int(r["cid"]): {"smiles": r["smiles"], "mw": r["mw"]}
+                 for _, r in prop_df.iterrows()}
+    elif MAX_MW is None and args.resume and prop_path.exists():
+        # top-up: the old checkpoint dropped MW >= 500; fetch only what is missing
+        prop_df = _load_checkpoint(prop_path)
+        props = {int(r["cid"]): {"smiles": r["smiles"], "mw": r["mw"]}
+                 for _, r in prop_df.iterrows()}
+        missing = sorted({d["cid"] for d in sid_details} - set(props))
+        print(f"[{vendor_name}] Step 3 top-up: fetching {len(missing):,} CIDs "
+              f"missing from the MW<500 checkpoint …", flush=True)
+        extra = fetch_compound_props(missing)
+        print(f"[{vendor_name}] {len(extra):,} additional CIDs fetched", flush=True)
+        props.update(extra)
+        prop_df = pd.DataFrame([{"cid": cid, "smiles": v["smiles"], "mw": v["mw"]}
+                                for cid, v in props.items()])
+        _save_checkpoint(prop_all_path, prop_df)
+    elif args.resume and prop_path.exists():
         print(f"[{vendor_name}] Resuming: loading properties from {prop_path}",
               flush=True)
         prop_df = _load_checkpoint(prop_path)
@@ -478,13 +535,13 @@ def process_vendor(vendor_name: str, source_name: str, args) -> pd.DataFrame:
               f"{len(unique_cids):,} unique CIDs …", flush=True)
         props = fetch_compound_props(unique_cids)
         n_mw = len(props)
-        print(f"[{vendor_name}] {n_mw:,} CIDs passed MW < 500 pre-filter",
-              flush=True)
+        print(f"[{vendor_name}] {n_mw:,} CIDs with properties"
+              + (f" (MW < {MAX_MW})" if MAX_MW is not None else ""), flush=True)
         prop_df = pd.DataFrame(
             [{"cid": cid, "smiles": v["smiles"], "mw": v["mw"]}
              for cid, v in props.items()]
         )
-        _save_checkpoint(prop_path, prop_df)
+        _save_checkpoint(prop_all_path if MAX_MW is None else prop_path, prop_df)
 
     if not props:
         return pd.DataFrame()
@@ -508,7 +565,7 @@ def process_vendor(vendor_name: str, source_name: str, args) -> pd.DataFrame:
         if mol is None:
             continue
 
-        types = classify(mol)
+        types, dendron = classify(mol)
         if not types:
             continue
 
@@ -518,7 +575,7 @@ def process_vendor(vendor_name: str, source_name: str, args) -> pd.DataFrame:
         seen_canon.add(canon)
 
         row = build_row(smiles, vendor_name, sburl, types,
-                        d.get("purity"), d.get("price_per_gram"))
+                        d.get("purity"), d.get("price_per_gram"), dendron)
         if row:
             rows.append(row)
 
@@ -559,11 +616,22 @@ def main():
         help="Load existing checkpoints and skip already-completed vendors.",
     )
     parser.add_argument(
+        "--max_mw", type=float, default=None,
+        help="Drop compounds with MW >= this (default: no limit; the 2026-04 run used 500).",
+    )
+    parser.add_argument(
+        "--exclude_chiral", action="store_true",
+        help="Drop compounds with chiral centres (the pre-2026-10 rule; default: allowed).",
+    )
+    parser.add_argument(
         "--limit", type=int, default=None,
         metavar="N",
         help="Process only the first N SIDs per vendor (for quick testing).",
     )
     args = parser.parse_args()
+    global MAX_MW, EXCLUDE_CHIRAL
+    MAX_MW = args.max_mw
+    EXCLUDE_CHIRAL = args.exclude_chiral
 
     # Resolve aliases and deduplicate while preserving order
     resolved = []

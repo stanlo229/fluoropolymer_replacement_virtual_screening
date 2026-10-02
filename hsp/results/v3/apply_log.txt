@@ -1,13 +1,14 @@
-monomers: 79314  Si: 307  expected Ra err (tier-1 CV): 2.833
+dendron monomers: 15 {'bis_mpa': 4, 'frechet': 4, 'generic_nested': 1, 'glycerol': 2, 'newkome': 1, 'pamam': 1, 'percec': 2}
+monomers: 126330  Si: 859  expected Ra err (tier-1 CV): 2.833
 D/P/H quantiles (non-Si):
           D      P      H
-0.00  15.45   1.32   0.00
-0.01  16.80   3.20   3.44
-0.50  19.58   8.26   6.95
-0.99  21.43  13.56  13.25
+0.00  15.45   0.87   0.00
+0.01  16.63   2.99   3.29
+0.50  19.27   7.87   6.68
+0.99  21.32  13.34  13.51
 1.00  23.40  18.12  24.57
-monomers with pooled (rare) atoms: 162
-Si monomers D range: {'min': 14.19, '50%': 16.66, 'max': 20.04}
+monomers with pooled (rare) atoms: 512
+Si monomers D range: {'min': 14.13, '50%': 16.65, 'max': 20.04}
                               id     D     P     H  Ra_PTFE  SPrefit_D  SPrefit_P  SPrefit_H
           1 cholesteryl NB ester 17.10  1.85  2.17     9.25      17.75       1.08       0.77
   2 bis(2-ethylhexyl) NB diester 16.63  3.38  3.99     9.44      16.47       2.79       2.94

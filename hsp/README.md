@@ -4,6 +4,16 @@ Predicts δD, δP and δH for ~79k norbornene ester/amide monomers built from ca
 alcohols and amines, and ranks them by Hansen distance (Ra) to PTFE, water,
 diiodomethane and n-hexadecane.
 
+## Library scope
+Side groups come from `dataset/catalogues.csv` and attach to the exo-norbornene-2,3-diacid
+as symmetric diesters or diamides. Since 2026-10 there is no MW limit, chiral side groups
+are allowed (`--exclude_chiral` on the scraper and on `rank_top_monomers.py` restores the old
+rule), and dendrons are included: Fréchet, Percec, bis-MPA, PAMAM, Newkome and polyglycerol families from
+generation 1, plus generic nested branching from generation 2 (`dataset/dendrons.py`).
+A dendron attaches through its focal OH or amine only; its peripheral groups stay free.
+Dendron monomers appear in the main rankings and are also ranked on their own in
+`results/v3/dendrons/`.
+
 ## Methods (three versions, all kept for comparison)
 
 | Version | HSP source | Where | Status |
@@ -39,6 +49,7 @@ hsp/
   reference/                             licensed HSPiP workbook + papers   (gitignored)
   results/legacy_sp/  v2/  v3/           outputs per method version (v3 = non-Si rankings)
   results/v3/si/                         Si-monomer rankings, kept separate (may not be reliable)
+  results/v3/dendrons/                   dendron-monomer rankings
   results/benchmark/                     CV predictions, fitted group tables, report   (gitignored)
   results/manual/2026-09-30/             the six requested monomers (hsp6*.csv)
   logs/                                  SLURM logs
@@ -50,6 +61,7 @@ Everything heavier than a quick check runs as a SLURM job. Submit from `hsp/`:
 
 ```bash
 cd hsp
+sbatch jobs/submit_library_rebuild.sh                    # after a new catalogue: library, S-P, v3, explorer
 sbatch jobs/submit_hsp.sh                                # legacy: library + S-P + rankings
 sbatch jobs/submit_v3_formula.sh                         # v3: CV + fit formula, apply, rank (non-Si + Si), Si analysis
 sbatch --export=ALL,FROM=apply jobs/submit_v3_formula.sh # v3 from a later stage (bench|apply|down|si)
@@ -77,4 +89,4 @@ only. The v2 tables also name each monomer's nearest HSPiP compound, but carry n
 
 Large per-monomer tables that the jobs regenerate are not tracked in git: all of v2's, and the
 v3 duplicates (`monomers_hsp_corrected.csv`, `hsp_Ra_ranked.csv`, `monomers_hsp_solvent_Ra.csv`).
-`results/v3/monomers_hsp_formula.csv` is the tracked full v3 table.
+`results/v3/monomers_hsp_formula.csv.gz` is the tracked full v3 table (gzipped; the job writes the plain CSV).

@@ -19,6 +19,7 @@ Outputs
   results/v3/monomers_hsp_corrected.csv   downstream input, non-Si monomers only
   results/v3/si/monomers_hsp_corrected.csv  downstream input, Si monomers only
   results/v3/si/si_monomers.csv           all Si monomers with v3 values
+  results/v3/dendrons/                    dendron monomers (focal-point attached), ranked on their own
 
 Si monomers are scored, but ranked SEPARATELY (results/v3/si/) because their
 values may not be reliable; see results/v3/si/README.md. Every Si row carries
@@ -42,8 +43,8 @@ from solvent_incompatibility import REFERENCES  # noqa: E402
 RES = HERE.parent / "results"
 TAB = RES / "benchmark" / "reference" / "gc_tables"
 V3 = RES / "v3"
-SI_NOTE = ("Si monomer: HSP NOT reliable (Si groups fitted on 67 HSPiP Si compounds, "
-           "only 7 curated, all much smaller than the monomers)")
+SI_NOTE = ("Si monomer: HSP NOT reliable (Si groups fitted on 51 HSPiP Si compounds, "
+           "only 7 measured, all much smaller than the monomers)")
 SIX = {
     "1 cholesteryl NB ester": "CC(CCC[C@H]([C@@]1([H])CC[C@]2([H])[C@]1(C)CC[C@@]3([H])[C@@]2([H])CC[C@]4([H])[C@]3(C)CC[C@H](OC(C5CC6C=CC5C6)=O)C4)C)C",
     "2 bis(2-ethylhexyl) NB diester": "O=C(C1C(C(OCC(CC)CCCC)=O)C2C=CC1C2)OCC(CC)CCCC",
@@ -112,6 +113,16 @@ def main():
     (V3 / "si").mkdir(exist_ok=True)
     comp[si.to_numpy()].to_csv(V3 / "si" / "monomers_hsp_corrected.csv", index=False)
     df[si].sort_values("Ra_PTFE").to_csv(V3 / "si" / "si_monomers.csv", index=False)
+
+    # dendron monomers: also ranked on their own (they stay in the main
+    # rankings too, unless they contain Si)
+    if "is_dendron" in df.columns:
+        dend = df.is_dendron.fillna(False).astype(bool).to_numpy()
+        (V3 / "dendrons").mkdir(exist_ok=True)
+        comp[dend].to_csv(V3 / "dendrons" / "monomers_hsp_corrected.csv", index=False)
+        df[dend].sort_values("Ra_PTFE").to_csv(V3 / "dendrons" / "dendron_monomers.csv", index=False)
+        print("dendron monomers:", int(dend.sum()),
+              df[dend].groupby("dendron_family").size().to_dict() if dend.any() else "")
 
     six = score(list(SIX.values()), space, fed, spr)
     six.insert(0, "id", list(SIX))

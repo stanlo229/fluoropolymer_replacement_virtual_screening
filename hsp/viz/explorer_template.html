@@ -34,6 +34,7 @@
   color-scheme: dark;
 }
 html, body { height: 100%; margin: 0; }
+[hidden] { display: none !important; }
 * { box-sizing: border-box; }
 body {
   background: var(--bg); color: var(--ink);
@@ -94,7 +95,7 @@ aside h2 { margin: 0; font: 650 15px/1.2 var(--font-display); font-stretch: 87%;
 #mol { width: 100%; height: 230px; border: 1px solid var(--line); border-radius: 5px; background: var(--bg); }
 #mol svg { width: 100%; height: 100%; display: block; }
 .smiles {
-  font: 11.5px/1.4 var(--font-mono); word-break: break-all; color: var(--ink);
+  font: 11.5px/1.4 var(--font-mono); white-space: pre-wrap; word-break: break-all; color: var(--ink);
   background: var(--bg); border: 1px solid var(--line); border-radius: 5px; padding: 6px 8px; margin: 0;
 }
 .row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
@@ -112,6 +113,7 @@ table.hsp { width: 100%; border-collapse: collapse; font-variant-numeric: tabula
 table.hsp th, table.hsp td { padding: 3px 4px; text-align: right; font-size: 12.5px; border-bottom: 1px solid var(--line); }
 table.hsp th:first-child, table.hsp td:first-child { text-align: left; color: var(--muted); font-weight: 500; }
 table.hsp td { font-family: var(--font-mono); }
+table.hsp td:first-child { font-family: var(--font-body); }
 .big3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
 .big3 div { background: var(--bg); border: 1px solid var(--line); border-radius: 5px; padding: 5px 7px; }
 .big3 span { display: block; font-size: 10.5px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
@@ -174,7 +176,7 @@ details p { margin: 6px 0; max-width: 65ch; }
   <main>
     <div id="plot-wrap">
       <div id="plot" aria-label="3D scatter of monomers in Hansen space"></div>
-      <div id="status">Unpacking 79,314 monomers…</div>
+      <div id="status">Unpacking the monomer library…</div>
     </div>
     <aside id="inspector" aria-live="polite">
       <h2 id="ins-title">Hover or click a point</h2>
@@ -184,7 +186,7 @@ details p { margin: 6px 0; max-width: 65ch; }
       <details>
         <summary>About these values</summary>
         <p id="about-method"></p>
-        <p>Si monomers are drawn as amber diamonds. Their values may not be reliable: the Si groups were fitted on 67 small Si compounds, only 7 of them measured, while these monomers are mostly TBS and TMS silyl ethers about four times larger.</p>
+        <p>Si monomers are drawn as amber diamonds. Their values may not be reliable: the Si groups were fitted on 51 small Si compounds, only 7 of them measured, while these monomers are mostly TBS and TMS silyl ethers about four times larger.</p>
         <p>Ra = √(4ΔδD² + ΔδP² + ΔδH²), in MPa½. Axes are plain δD, δP and δH, so on-screen distance is not Ra.</p>
       </details>
     </aside>
@@ -363,7 +365,8 @@ __LIB_SMILESDRAWER__
     try {
       if (!drawer) drawer = new SmilesDrawer.SvgDrawer({ width: 320, height: 230, padding: 12, compactDrawing: false });
       SmilesDrawer.parse(smiles, (tree) => {
-        drawer.draw(tree, "mol-svg", isDark() ? "dark" : "light", false);
+        // SmilesDrawer 2.x: draw(tree, target, theme, weights, infoOnly)
+        drawer.draw(tree, "mol-svg", isDark() ? "dark" : "light", null, false);
         const svg = $("#mol-svg");
         if (svg) { svg.style.background = "transparent"; svg.removeAttribute("width"); svg.removeAttribute("height"); }
       }, () => { box.innerHTML = '<p class="hint" style="padding:10px">This structure could not be drawn.</p>'; });
@@ -402,6 +405,7 @@ __LIB_SMILESDRAWER__
     drawMolecule(D.smi[i]);
     const vals = {}; Object.keys(D.probes).forEach((k) => (vals[k] = ra(i, k)));
     const ranks = D.lists.map((l) => [l, l.idx.indexOf(i)]).filter(([, r]) => r >= 0)
+      .filter(([l]) => l.key !== "dendrons:all")
       .map(([l, r]) => `<span class="chip ${l.si ? "si" : "ok"}">#${r + 1} ${l.label}</span>`).join("");
     const vendor = D.vend[i] >= 0 ? D.vendors[D.vend[i]] : "";
     const chips = [
@@ -411,6 +415,7 @@ __LIB_SMILESDRAWER__
       D.surv[i] ? '<span class="chip ok">passes ranking filters</span>' : '<span class="chip">outside ranking filters</span>',
       D.si[i] ? '<span class="chip si">Si: may not be reliable</span>' : "",
       D.pool[i] ? '<span class="chip">rare atom type</span>' : "",
+      D.dend && D.dend[i] ? `<span class="chip ok">dendron: ${D.dend[i].replace("_", "-")}</span>` : "",
     ].join("");
     const body = $("#ins-body");
     body.innerHTML =
@@ -473,6 +478,9 @@ __LIB_SMILESDRAWER__
     on("#showRefs", "change", (e) => { state.showRefs = e.target.checked; render(); });
     on("#size", "input", (e) => { state.size = +e.target.value; render(); });
     on("#reset", "click", () => Plotly.relayout(plotEl, { "scene.camera": { eye: { x: 1.6, y: -1.6, z: 0.9 }, center: { x: 0, y: 0, z: 0 }, up: { x: 0, y: 0, z: 1 } } }));
+  }
+  // Plotly adds .on() to the element only after the first plot exists
+  function wirePlot() {
     plotEl.on("plotly_hover", (ev) => { clearTimeout(hoverTimer); hoverTimer = setTimeout(() => onPoint(ev, false), 60); });
     plotEl.on("plotly_unhover", () => { clearTimeout(hoverTimer); if (sel >= 0) setTimeout(() => showMonomer(sel, true), 80); });
     plotEl.on("plotly_click", (ev) => onPoint(ev, true));
@@ -483,10 +491,12 @@ __LIB_SMILESDRAWER__
 
   function fillLists() {
     const sel = $("#list");
-    const groups = [["Main rankings (non-Si)", false], ["Si-only rankings (may not be reliable)", true]];
-    for (const [label, si] of groups) {
+    const groups = [["Main rankings (non-Si)", (l) => !l.si && !l.dend && !l.key.startsWith("dendrons:")],
+                    ["Dendrons", (l) => l.dend || l.key.startsWith("dendrons:")],
+                    ["Si-only rankings (may not be reliable)", (l) => l.si]];
+    for (const [label, keep] of groups) {
       const g = document.createElement("optgroup"); g.label = label;
-      D.lists.filter((l) => l.si === si).forEach((l) => {
+      D.lists.filter(keep).forEach((l) => {
         const o = document.createElement("option"); o.value = l.key; o.textContent = l.label; g.appendChild(o);
       });
       if (g.children.length) sel.appendChild(g);
@@ -502,9 +512,11 @@ __LIB_SMILESDRAWER__
     }
     N = D.n;
     const nSi = D.si.reduce((a, b) => a + b, 0), nSurv = D.surv.reduce((a, b) => a + b, 0);
+    const nDend = D.dend ? D.dend.filter(Boolean).length : 0;
     $("#facts").innerHTML =
       `<span><b>${N.toLocaleString()}</b> monomers</span>` +
       `<span><b>${nSi}</b> containing Si</span>` +
+      (nDend ? `<span><b>${nDend}</b> dendrons</span>` : "") +
       `<span><b>${nSurv.toLocaleString()}</b> pass the ranking filters</span>` +
       `<span>v3 group-contribution formula · expected Ra error ≈ <b>${D.meta.medRa}</b> MPa½</span>`;
     $("#about-method").textContent =
@@ -513,10 +525,21 @@ __LIB_SMILESDRAWER__
       `These are predictions, not measurements. Built ${D.meta.built}.`;
     fillLists();
     if (typeof Plotly === "undefined") { $("#status").textContent = "The plotting library did not load. Check the internet connection and reload."; return; }
-    $("#status").hidden = true;
+    $("#status").textContent = `Drawing ${N.toLocaleString()} points…`;
+    await new Promise((r) => setTimeout(r, 30));   // let the status paint
     wire();
     render();
+    wirePlot();
+    $("#status").hidden = true;
   }
-  start();
+  // show any failure on the page instead of leaving a blank plot
+  function fail(msg) {
+    const s = $("#status");
+    s.hidden = false;
+    s.textContent = "The plot could not load: " + msg;
+  }
+  window.addEventListener("error", (e) => fail(e.message || String(e.error)));
+  window.addEventListener("unhandledrejection", (e) => fail(String(e.reason && e.reason.message || e.reason)));
+  start().catch((e) => fail(e.message || String(e)));
 })();
 </script>

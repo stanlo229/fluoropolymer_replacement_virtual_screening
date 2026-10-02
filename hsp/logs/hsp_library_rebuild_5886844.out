@@ -1,0 +1,327 @@
+
+The following have been reloaded with a version change:
+  1) ipykernel/2026a => ipykernel/2024a
+  2) scipy-stack/2026a => scipy-stack/2024a
+
+== library (14:06:08) ==
+14:06:08 INFO run_pipeline: === Step 1: Generating monomers ===
+14:06:11 INFO generate_monomers: Loaded 91768 compounds from ../dataset/catalogues.csv
+[14:06:11] Explicit valence for atom # 25 O, 3, is greater than permitted
+[14:06:11] Explicit valence for atom # 13 O, 3, is greater than permitted
+[14:06:11] Explicit valence for atom # 16 O, 3, is greater than permitted
+[14:06:12] Conflicting single bond directions around double bond at index 10.
+[14:06:12]   BondStereo set to STEREONONE and single bond directions set to NONE.
+[14:06:57] Explicit valence for atom # 13 N, 4, is greater than permitted
+[14:06:57] Explicit valence for atom # 34 O, 3, is greater than permitted
+[14:06:57] Explicit valence for atom # 13 O, 3, is greater than permitted
+[14:06:57] Explicit valence for atom # 19 O, 3, is greater than permitted
+[14:06:57] Explicit valence for atom # 14 N, 4, is greater than permitted
+[14:06:57] Explicit valence for atom # 14 N, 4, is greater than permitted
+[14:06:57] Explicit valence for atom # 20 N, 4, is greater than permitted
+[14:06:57] Explicit valence for atom # 21 N, 4, is greater than permitted
+[14:06:57] Explicit valence for atom # 14 N, 4, is greater than permitted
+[14:06:57] Explicit valence for atom # 20 N, 4, is greater than permitted
+[14:06:57] Explicit valence for atom # 23 O, 3, is greater than permitted
+[14:06:57] Explicit valence for atom # 18 N, 4, is greater than permitted
+[14:06:57] Explicit valence for atom # 20 N, 4, is greater than permitted
+[14:06:57] Explicit valence for atom # 30 O, 3, is greater than permitted
+[14:06:57] Explicit valence for atom # 13 N, 4, is greater than permitted
+[14:06:57] Explicit valence for atom # 26 N, 4, is greater than permitted
+[14:06:57] Explicit valence for atom # 20 O, 3, is greater than permitted
+[14:06:57] Explicit valence for atom # 22 O, 3, is greater than permitted
+[14:06:57] Explicit valence for atom # 15 N, 4, is greater than permitted
+[14:06:57] Explicit valence for atom # 14 N, 4, is greater than permitted
+[14:06:58] Explicit valence for atom # 25 N, 4, is greater than permitted
+[14:06:58] Explicit valence for atom # 20 N, 4, is greater than permitted
+[14:06:58] Explicit valence for atom # 14 N, 4, is greater than permitted
+[14:06:58] Explicit valence for atom # 22 N, 4, is greater than permitted
+[14:06:58] Explicit valence for atom # 20 N, 4, is greater than permitted
+[14:06:58] Explicit valence for atom # 18 N, 4, is greater than permitted
+[14:06:58] Explicit valence for atom # 25 O, 3, is greater than permitted
+[14:06:58] Explicit valence for atom # 40 O, 3, is greater than permitted
+[14:06:58] Explicit valence for atom # 24 O, 3, is greater than permitted
+[14:06:58] Explicit valence for atom # 26 N, 4, is greater than permitted
+[14:06:58] Explicit valence for atom # 17 N, 4, is greater than permitted
+[14:06:58] Explicit valence for atom # 14 N, 4, is greater than permitted
+[14:06:58] Explicit valence for atom # 16 N, 4, is greater than permitted
+[14:06:58] Explicit valence for atom # 37 O, 3, is greater than permitted
+[14:06:58] Explicit valence for atom # 20 O, 3, is greater than permitted
+[14:06:58] Explicit valence for atom # 13 O, 3, is greater than permitted
+[14:06:58] Explicit valence for atom # 13 O, 3, is greater than permitted
+[14:06:58] Explicit valence for atom # 13 O, 3, is greater than permitted
+[14:06:58] Explicit valence for atom # 13 O, 3, is greater than permitted
+[14:06:58] Explicit valence for atom # 13 N, 4, is greater than permitted
+[14:06:58] Explicit valence for atom # 19 N, 4, is greater than permitted
+[14:06:58] Explicit valence for atom # 24 O, 3, is greater than permitted
+[14:06:58] Explicit valence for atom # 19 O, 3, is greater than permitted
+[14:06:58] Explicit valence for atom # 14 O, 3, is greater than permitted
+[14:06:58] Explicit valence for atom # 17 O, 3, is greater than permitted
+[14:06:58] Explicit valence for atom # 15 O, 3, is greater than permitted
+[14:06:58] Explicit valence for atom # 13 N, 4, is greater than permitted
+[14:06:58] Explicit valence for atom # 19 O, 3, is greater than permitted
+[14:06:58] Explicit valence for atom # 22 O, 3, is greater than permitted
+[14:06:58] Explicit valence for atom # 20 O, 3, is greater than permitted
+[14:06:58] Explicit valence for atom # 23 O, 3, is greater than permitted
+[14:06:58] Explicit valence for atom # 13 O, 3, is greater than permitted
+[14:06:58] Explicit valence for atom # 13 O, 3, is greater than permitted
+[14:06:58] Explicit valence for atom # 23 O, 3, is greater than permitted
+[14:06:58] Explicit valence for atom # 13 N, 4, is greater than permitted
+[14:06:58] Explicit valence for atom # 14 N, 4, is greater than permitted
+[14:06:58] Explicit valence for atom # 13 O, 3, is greater than permitted
+[14:06:58] Explicit valence for atom # 13 N, 4, is greater than permitted
+[14:06:58] Explicit valence for atom # 18 N, 4, is greater than permitted
+[14:06:58] Explicit valence for atom # 15 N, 4, is greater than permitted
+[14:06:58] Explicit valence for atom # 15 N, 4, is greater than permitted
+[14:06:58] Explicit valence for atom # 18 N, 4, is greater than permitted
+[14:06:58] Explicit valence for atom # 14 N, 4, is greater than permitted
+[14:06:58] Explicit valence for atom # 14 N, 4, is greater than permitted
+[14:06:58] Explicit valence for atom # 19 N, 4, is greater than permitted
+[14:06:58] Explicit valence for atom # 15 N, 4, is greater than permitted
+[14:06:58] Explicit valence for atom # 21 O, 3, is greater than permitted
+[14:06:58] Explicit valence for atom # 26 O, 3, is greater than permitted
+[14:06:58] Explicit valence for atom # 19 N, 4, is greater than permitted
+[14:06:58] Explicit valence for atom # 19 N, 4, is greater than permitted
+[14:06:58] Explicit valence for atom # 20 N, 4, is greater than permitted
+[14:06:58] Explicit valence for atom # 30 O, 3, is greater than permitted
+[14:06:58] Explicit valence for atom # 14 N, 4, is greater than permitted
+[14:06:58] Explicit valence for atom # 14 O, 3, is greater than permitted
+[14:06:58] Explicit valence for atom # 22 N, 4, is greater than permitted
+[14:06:58] Explicit valence for atom # 14 N, 4, is greater than permitted
+[14:06:58] Explicit valence for atom # 18 O, 3, is greater than permitted
+[14:06:58] Explicit valence for atom # 23 O, 3, is greater than permitted
+[14:06:58] Explicit valence for atom # 24 O, 3, is greater than permitted
+[14:06:58] Explicit valence for atom # 18 O, 3, is greater than permitted
+[14:06:58] Explicit valence for atom # 18 N, 4, is greater than permitted
+[14:06:58] Explicit valence for atom # 24 O, 3, is greater than permitted
+[14:06:59] Explicit valence for atom # 24 O, 3, is greater than permitted
+[14:06:59] Explicit valence for atom # 19 N, 4, is greater than permitted
+[14:07:00] Explicit valence for atom # 13 O, 3, is greater than permitted
+[14:07:00] Explicit valence for atom # 13 N, 4, is greater than permitted
+[14:07:00] Explicit valence for atom # 13 O, 3, is greater than permitted
+[14:07:00] Explicit valence for atom # 21 O, 3, is greater than permitted
+[14:07:00] Explicit valence for atom # 16 N, 4, is greater than permitted
+[14:07:00] Explicit valence for atom # 20 O, 3, is greater than permitted
+[14:07:00] Explicit valence for atom # 16 N, 4, is greater than permitted
+[14:07:00] Explicit valence for atom # 13 N, 4, is greater than permitted
+[14:07:00] Explicit valence for atom # 13 N, 4, is greater than permitted
+[14:07:00] Explicit valence for atom # 24 N, 4, is greater than permitted
+[14:07:01] Explicit valence for atom # 18 O, 3, is greater than permitted
+[14:07:01] Explicit valence for atom # 20 O, 3, is greater than permitted
+[14:07:01] Explicit valence for atom # 25 O, 3, is greater than permitted
+[14:07:01] Explicit valence for atom # 18 N, 4, is greater than permitted
+[14:07:01] Explicit valence for atom # 14 N, 4, is greater than permitted
+[14:07:01] Explicit valence for atom # 22 O, 3, is greater than permitted
+[14:07:01] Explicit valence for atom # 18 N, 4, is greater than permitted
+[14:07:01] Explicit valence for atom # 27 N, 4, is greater than permitted
+[14:07:01] Explicit valence for atom # 19 N, 4, is greater than permitted
+[14:07:01] Explicit valence for atom # 18 N, 4, is greater than permitted
+[14:07:01] Explicit valence for atom # 18 N, 4, is greater than permitted
+[14:07:01] Explicit valence for atom # 30 O, 3, is greater than permitted
+[14:07:01] Explicit valence for atom # 16 N, 4, is greater than permitted
+[14:07:01] Explicit valence for atom # 19 N, 4, is greater than permitted
+[14:07:01] Explicit valence for atom # 26 N, 4, is greater than permitted
+[14:07:01] Explicit valence for atom # 32 O, 3, is greater than permitted
+[14:07:01] Explicit valence for atom # 19 O, 3, is greater than permitted
+[14:07:01] Explicit valence for atom # 23 O, 3, is greater than permitted
+[14:07:01] Explicit valence for atom # 13 O, 3, is greater than permitted
+[14:07:01] Explicit valence for atom # 19 O, 3, is greater than permitted
+[14:07:01] Explicit valence for atom # 25 O, 3, is greater than permitted
+[14:07:01] Explicit valence for atom # 20 O, 3, is greater than permitted
+[14:07:01] Explicit valence for atom # 24 O, 3, is greater than permitted
+[14:07:01] Explicit valence for atom # 16 N, 4, is greater than permitted
+[14:07:01] Explicit valence for atom # 28 O, 3, is greater than permitted
+[14:07:01] Explicit valence for atom # 42 O, 3, is greater than permitted
+[14:07:01] Explicit valence for atom # 13 O, 3, is greater than permitted
+[14:07:01] Explicit valence for atom # 13 O, 3, is greater than permitted
+[14:07:01] Explicit valence for atom # 16 O, 3, is greater than permitted
+[14:07:02] Explicit valence for atom # 13 N, 4, is greater than permitted
+[14:07:02] Explicit valence for atom # 13 N, 4, is greater than permitted
+[14:07:02] Explicit valence for atom # 25 O, 3, is greater than permitted
+[14:07:02] Explicit valence for atom # 16 O, 3, is greater than permitted
+[14:07:02] Explicit valence for atom # 16 N, 4, is greater than permitted
+[14:07:02] Explicit valence for atom # 16 N, 4, is greater than permitted
+[14:07:02] Explicit valence for atom # 13 O, 3, is greater than permitted
+[14:07:02] Explicit valence for atom # 21 N, 4, is greater than permitted
+[14:07:02] Explicit valence for atom # 21 O, 3, is greater than permitted
+[14:07:02] Explicit valence for atom # 22 O, 3, is greater than permitted
+[14:07:02] Explicit valence for atom # 19 N, 4, is greater than permitted
+[14:07:02] Explicit valence for atom # 24 O, 3, is greater than permitted
+[14:07:02] Explicit valence for atom # 13 O, 3, is greater than permitted
+[14:07:02] Explicit valence for atom # 13 O, 3, is greater than permitted
+14:08:30 INFO generate_monomers: Generated 80936 difunctional monomers (33376 diester, 47560 diamide, 320 with Si). Skipped 14119. Written to results/legacy_sp/monomers.csv
+14:08:30 INFO run_pipeline:   generate_monomers done in 142.2 s
+14:08:30 INFO run_pipeline: === Step 2: Computing HSP (Stefanis–Panayiotou) ===
+HSP chunks:   0%|          | 0/17 [00:00<?, ?chunk/s][14:08:32] Conflicting single bond directions around double bond at index 9.
+[14:08:32]   BondStereo set to STEREONONE and single bond directions set to NONE.
+[14:08:32] Conflicting single bond directions around double bond at index 15.
+[14:08:32]   BondStereo set to STEREONONE and single bond directions set to NONE.
+HSP chunks:   6%|▌         | 1/17 [00:11<03:10, 11.91s/chunk]HSP chunks:  12%|█▏        | 2/17 [00:25<03:14, 12.98s/chunk]HSP chunks:  18%|█▊        | 3/17 [00:38<03:00, 12.88s/chunk]HSP chunks:  24%|██▎       | 4/17 [00:51<02:49, 13.07s/chunk]HSP chunks:  29%|██▉       | 5/17 [01:01<02:24, 12.03s/chunk]HSP chunks:  35%|███▌      | 6/17 [01:12<02:04, 11.36s/chunk]HSP chunks:  41%|████      | 7/17 [01:22<01:50, 11.01s/chunk]HSP chunks:  47%|████▋     | 8/17 [01:32<01:36, 10.70s/chunk]HSP chunks:  53%|█████▎    | 9/17 [01:43<01:25, 10.70s/chunk]HSP chunks:  59%|█████▉    | 10/17 [01:54<01:16, 10.89s/chunk]HSP chunks:  65%|██████▍   | 11/17 [02:04<01:04, 10.77s/chunk]HSP chunks:  71%|███████   | 12/17 [02:15<00:53, 10.69s/chunk]HSP chunks:  76%|███████▋  | 13/17 [02:26<00:42, 10.72s/chunk]HSP chunks:  82%|████████▏ | 14/17 [02:37<00:32, 10.88s/chunk]HSP chunks:  88%|████████▊ | 15/17 [02:48<00:21, 10.94s/chunk]HSP chunks:  94%|█████████▍| 16/17 [02:59<00:11, 11.04s/chunk]HSP chunks: 100%|██████████| 17/17 [03:01<00:00,  8.36s/chunk]HSP chunks: 100%|██████████| 17/17 [03:01<00:00, 10.70s/chunk]
+14:11:33 INFO run_pipeline:   HSP computed: 80936 OK, 0 errors
+14:11:33 INFO run_pipeline:   hsp_calculator done in 182.6 s
+14:11:33 INFO run_pipeline: === Step 3: corrected columns (no Si correction) ===
+14:11:34 INFO run_pipeline:   corrected columns done in 0.8 s
+14:11:34 INFO run_pipeline: === Step 4: Visualization ===
+14:11:39 INFO visualize_hsp: Plot saved to results/legacy_sp/hsp_hansen_space.png
+14:11:40 INFO visualize_hsp: Ra-ranked CSV saved to results/legacy_sp/hsp_Ra_ranked.csv  (top 5 Ra=2.95–3.06 MPa^0.5)
+14:11:40 INFO run_pipeline:   visualize_hsp done in 6.4 s
+14:11:40 INFO run_pipeline: === Pipeline complete in 332.0 s ===
+14:11:40 INFO run_pipeline: Outputs in results/legacy_sp:
+14:11:40 INFO run_pipeline:   excluded_outside_envelope.csv
+14:11:40 INFO run_pipeline:   filter_report.json
+14:11:40 INFO run_pipeline:   hsp_Ra_ranked.csv
+14:11:40 INFO run_pipeline:   hsp_hansen_space.png
+14:11:40 INFO run_pipeline:   hsp_hansen_space_density.png
+14:11:40 INFO run_pipeline:   hsp_hansen_space_interactive.html
+14:11:40 INFO run_pipeline:   monomers.csv
+14:11:40 INFO run_pipeline:   monomers_filtered_ranked.csv
+14:11:40 INFO run_pipeline:   monomers_hsp.csv
+14:11:40 INFO run_pipeline:   monomers_hsp_corrected.csv
+14:11:40 INFO run_pipeline:   monomers_hsp_solvent_Ra.csv
+14:11:40 INFO run_pipeline:   si_correction_calibration.json
+14:11:40 INFO run_pipeline:   skipped.csv
+14:11:40 INFO run_pipeline:   top25_ranked_diiodomethane.csv
+14:11:40 INFO run_pipeline:   top25_ranked_diiodomethane_grid.png
+14:11:40 INFO run_pipeline:   top25_ranked_dominant_dispersion.csv
+14:11:40 INFO run_pipeline:   top25_ranked_dominant_dispersion_grid.png
+14:11:40 INFO run_pipeline:   top25_ranked_dominant_hbonding.csv
+14:11:40 INFO run_pipeline:   top25_ranked_dominant_hbonding_grid.png
+14:11:40 INFO run_pipeline:   top25_ranked_dominant_polar.csv
+14:11:40 INFO run_pipeline:   top25_ranked_dominant_polar_grid.png
+14:11:40 INFO run_pipeline:   top25_ranked_max_dispersion.csv
+14:11:40 INFO run_pipeline:   top25_ranked_max_dispersion_grid.png
+14:11:40 INFO run_pipeline:   top25_ranked_max_hbonding.csv
+14:11:40 INFO run_pipeline:   top25_ranked_max_hbonding_grid.png
+14:11:40 INFO run_pipeline:   top25_ranked_max_polar.csv
+14:11:40 INFO run_pipeline:   top25_ranked_max_polar_grid.png
+14:11:40 INFO run_pipeline:   top25_ranked_ptfe.csv
+14:11:40 INFO run_pipeline:   top25_ranked_ptfe_grid.png
+14:11:40 INFO run_pipeline:   top25_ranked_water.csv
+14:11:40 INFO run_pipeline:   top25_ranked_water_grid.png
+14:11:40 INFO run_pipeline:   top25_ranked_water_no_basic_N.csv
+14:11:40 INFO run_pipeline:   top25_ranked_water_no_basic_N_grid.png
+
+Top 50 monomers closest to PTFE (Ra, MPa^0.5):
+                                                                                                                                                                               monomer_smiles linkage  delta_D_corr  delta_P_corr  delta_H_corr  Ra_from_PTFE
+                                        CCCC/C=C/CCCCCCCCCCCCCC1=C(OC(=O)[C@@H]2[C@H](C(=O)OC3=C(CCCCCCCCCCCCC/C=C/CCCC)C(=O)C(OC(C)=O)=C(C)C3=O)[C@@H]3C=C[C@@H]2C3)C(=O)C(C)=C(OC(C)=O)C1=O   ester       11.3851        0.1830        1.3294      2.952396
+                                                                                                        CCCCCCCCCCCC(CC)(CC)OC(=O)[C@@H]1[C@H](C(=O)OC(CC)(CC)CCCCCCCCCCC)[C@@H]2C=C[C@@H]1C2   ester       13.1830       -1.5450        2.4326      3.039362
+                                                                                                        CCCCCCC(CCC)(CCCCCC)OC(=O)[C@@H]1[C@H](C(=O)OC(CCC)(CCCCCC)CCCCCC)[C@@H]2C=C[C@@H]1C2   ester       13.1830       -1.5450        2.4326      3.039362
+                                                                                                        CCCCCCCC(CCCC)(CCCC)OC(=O)[C@@H]1[C@H](C(=O)OC(CCCC)(CCCC)CCCCCCC)[C@@H]2C=C[C@@H]1C2   ester       13.1830       -1.5450        2.4326      3.039362
+                                                                  CC1=C(C)C(=O)C(CCCCC#CCCCC#CCOC(=O)[C@@H]2[C@H](C(=O)OCC#CCCCC#CCCCCC3=C(C)C(=O)C(C)=C(C)C3=O)[C@@H]3C=C[C@@H]2C3)=C(C)C1=O   ester       11.7487       -2.1070        1.1426      3.060208
+                                                                                                    CCCCCCCCC(C)(CCCCCCCC)OC(=O)[C@@H]1[C@H](C(=O)OC(C)(CCCCCCCC)CCCCCCCC)[C@@H]2C=C[C@@H]1C2   ester       13.2591       -2.0894        1.9682      3.080548
+                                                                                                            CCCCCCCCCC(CC)(CC)OC(=O)[C@@H]1[C@H](C(=O)OC(CC)(CC)CCCCCCCCC)[C@@H]2C=C[C@@H]1C2   ester       13.1063       -1.0006        2.8970      3.170825
+                                                                                                CCCCCCCCCCCCCCCC(CC)(CC)OC(=O)[C@@H]1[C@H](C(=O)OC(CC)(CC)CCCCCCCCCCCCCCC)[C@@H]2C=C[C@@H]1C2   ester       13.3346       -2.6338        1.5038      3.287733
+                                                                                                              CCCCCCCCCCC(C)(C)OC(=O)[C@@H]1[C@H](C(=O)OC(C)(C)CCCCCCCCCC)[C@@H]2C=C[C@@H]1C2   ester       13.0677       -0.7284        3.1292      3.295948
+                                                                                                                            CCC(C)(CC)OC(=O)[C@@H]1[C@H](C(=O)OC(C)(CC)CC)[C@@H]2C=C[C@@H]1C2   ester       12.7928        1.1770        3.2531      3.464453
+                                                                                                                            CCCC(C)(C)OC(=O)[C@@H]1[C@H](C(=O)OC(C)(C)CCC)[C@@H]2C=C[C@@H]1C2   ester       12.7928        1.1770        3.2531      3.464453
+                                                    CCCC/C=C/CCCCCCCCCCCCCC1=C(O)C(=O)C(C)=C(OC(=O)[C@@H]2[C@H](C(=O)OC3=C(C)C(=O)C(O)=C(CCCCCCCCCCCCC/C=C/CCCC)C3=O)[C@@H]3C=C[C@@H]2C3)C1=O   ester       12.5296       -3.3592        1.3294      3.628729
+                                                                                            CCCCCCCCCCCCCCCCCC(CC)(CC)OC(=O)[C@@H]1[C@H](C(=O)OC(CC)(CC)CCCCCCCCCCCCCCCCC)[C@@H]2C=C[C@@H]1C2   ester       13.4095       -3.1782        1.0394      3.632474
+                                                                                                                  CCCCCCCCC(C)(C)OC(=O)[C@@H]1[C@H](C(=O)OC(C)(C)CCCCCCCC)[C@@H]2C=C[C@@H]1C2   ester       12.9900       -0.1840        3.5936      3.644752
+                                                                                                              CCCCCCCC(CCCCCCC)NC(=O)[C@@H]1[C@H](C(=O)NC(CCCCCCC)CCCCCCC)[C@@H]2C=C[C@@H]1C2   amide       14.2016       -1.7848        1.2572      3.712852
+                                                                                    CC(C)(C)OC(=O)C(C)(C)n1cc(NC(=O)[C@@H]2[C@H](C(=O)Nc3cnn(C(C)(C)C(=O)OC(C)(C)C)c3)[C@@H]3C=C[C@@H]2C3)cn1   amide       11.9631       -1.5444        3.0877      3.753818
+                                                                                                                    CCCCC(C)(CCCC)OC(=O)[C@@H]1[C@H](C(=O)OC(C)(CCCC)CCCC)[C@@H]2C=C[C@@H]1C2   ester       12.9509        0.0882        3.8258      3.859576
+                                                          CCCCCCCCCCCCCCCCCCCC1=C(O)C(=O)C(C)=C(OC(=O)[C@@H]2[C@H](C(=O)OC3=C(C)C(=O)C(O)=C(CCCCCCCCCCCCCCCCCCC)C3=O)[C@@H]3C=C[C@@H]2C3)C1=O   ester       13.2727       -3.6798       -0.3628      3.870981
+                                                                                          CCC1=C(O)C(=O)C(CC)=C(OC(=O)[C@@H]2[C@H](C(=O)OC3=C(CC)C(=O)C(O)=C(CC)C3=O)[C@@H]3C=C[C@@H]2C3)C1=O   ester       11.3493        0.6754        2.7906      3.942230
+                                                                CCCC/C=C/CCCCCCCCCC1=C(OC(=O)[C@@H]2[C@H](C(=O)OC3=C(CCCCCCCCC/C=C/CCCC)C(=O)C(OC)=CC3=O)[C@@H]3C=C[C@@H]2C3)C(=O)C=C(OC)C1=O   ester       14.3962        0.9832        1.8412      3.983099
+                                                                                                          CCCCCCCCC(CCCCCCCC)NC(=O)[C@@H]1[C@H](C(=O)NC(CCCCCCCC)CCCCCCCC)[C@@H]2C=C[C@@H]1C2   amide       14.2701       -2.3292        0.7928      3.989306
+                                                                                                                      CCCCC(CC)(CC)OC(=O)[C@@H]1[C@H](C(=O)OC(CC)(CC)CCCC)[C@@H]2C=C[C@@H]1C2   ester       12.9116        0.3604        4.0580      4.095894
+                                                                                                                  CC(C)(N)C(C)(C)OC(=O)[C@@H]1[C@H](C(=O)OC(C)(C)C(C)(C)N)[C@@H]2C=C[C@@H]1C2   ester       13.9348        0.3000        3.2897      4.124445
+                                                                                                            CCCC(=N\O)/C(=N/O)NC(=O)[C@@H]1[C@H](C(=O)NC(=N\O)/C(CCC)=N/O)[C@@H]2C=C[C@@H]1C2   amide       14.2161        1.0632        2.7040      4.199553
+                                                                                                      CCCCCN=C(NC(=O)[C@@H]1[C@H](C(=O)NC(=NCCCCC)C(Cl)(Cl)Cl)[C@@H]2C=C[C@@H]1C2)C(Cl)(Cl)Cl   amide       14.4802        0.5188        2.2396      4.238090
+                                                                                                CC(C)(C)C(=O)CC1(OC(=O)[C@@H]2[C@H](C(=O)OC3(CC(=O)C(C)(C)C)CCCCC3)[C@@H]3C=C[C@@H]2C3)CCCCC1   ester       13.6292       -1.5626        3.4962      4.256616
+                                                                                                                              CCC(C)(C)OC(=O)[C@@H]1[C@H](C(=O)OC(C)(C)CC)[C@@H]2C=C[C@@H]1C2   ester       12.7528        1.4492        4.0285      4.282539
+                                                                                                                        CC(C)C(C)(C)OC(=O)[C@@H]1[C@H](C(=O)OC(C)(C)C(C)C)[C@@H]2C=C[C@@H]1C2   ester       11.9645        2.0446        3.5033      4.314782
+CCCCCCC(CCCCCC)C(=O)OCCCCCCC(CCCCCCOC(=O)C(CCCCCC)CCCCCC)(CCCCN(CCC)CCC)OC(=O)[C@@H]1[C@H](C(=O)OC(CCCCCCOC(=O)C(CCCCCC)CCCCCC)(CCCCCCOC(=O)C(CCCCCC)CCCCCC)CCCCN(CCC)CCC)[C@@H]2C=C[C@@H]1C2   ester       14.1791       -2.6992       -1.6098      4.316026
+                                                                                                                        CCCC(CC)(CC)OC(=O)[C@@H]1[C@H](C(=O)OC(CC)(CC)CCC)[C@@H]2C=C[C@@H]1C2   ester       12.8722        0.6326        4.2902      4.350243
+                                                                                                                        CCCC(C)(CCC)OC(=O)[C@@H]1[C@H](C(=O)OC(C)(CCC)CCC)[C@@H]2C=C[C@@H]1C2   ester       12.8722        0.6326        4.2902      4.350243
+                                                                                                                        CCCCCC(C)(C)OC(=O)[C@@H]1[C@H](C(=O)OC(C)(C)CCCCC)[C@@H]2C=C[C@@H]1C2   ester       12.8722        0.6326        4.2902      4.350243
+                                                                                                                        CCCC/C(=N/O)NC(=O)[C@@H]1[C@H](C(=O)N/C(CCCC)=N\O)[C@@H]2C=C[C@@H]1C2   amide       14.4467        0.7910        2.4718      4.351933
+                                                                                                      CCCCCCCCCC(CCCCCCCCC)NC(=O)[C@@H]1[C@H](C(=O)NC(CCCCCCCCC)CCCCCCCCC)[C@@H]2C=C[C@@H]1C2   amide       14.3381       -2.8736        0.3284      4.370230
+                                                                      COC1=C(OC)C(=O)C(CCCCCCCCCCOC(=O)[C@@H]2[C@H](C(=O)OCCCCCCCCCCC3=C(C)C(=O)C(OC)=C(OC)C3=O)[C@@H]3C=C[C@@H]2C3)=C(C)C1=O   ester       14.7620       -1.2486        0.8866      4.399141
+                                                                                                                  CC(C)CC/C(=N\O)NC(=O)[C@@H]1[C@H](C(=O)N/C(CCC(C)C)=N/O)[C@@H]2C=C[C@@H]1C2   amide       13.7946        1.3864        3.5792      4.418753
+                                                                                                                        CC(C)CCC(=N)NC(=O)[C@@H]1[C@H](C(=O)NC(=N)CCC(C)C)[C@@H]2C=C[C@@H]1C2   amide       13.7946        1.3864        3.5792      4.418753
+                                                                                                              CC(C)(C)C/C(=N/O)NC(=O)[C@@H]1[C@H](C(=O)N/C(CC(C)(C)C)=N\O)[C@@H]2C=C[C@@H]1C2   amide       13.1156       -1.5074        4.1322      4.476408
+                                                                                                                              CCCC(=NO)NC(=O)[C@@H]1[C@H](C(=O)NC(CCC)=NO)[C@@H]2C=C[C@@H]1C2   amide       14.4131        1.0632        2.7040      4.492311
+                                                                                                                          CCC/C(=N/O)NC(=O)[C@@H]1[C@H](C(=O)N/C(CCC)=N\O)[C@@H]2C=C[C@@H]1C2   amide       14.4131        1.0632        2.7040      4.492311
+                                                                                                                                CCCC(=N)NC(=O)[C@@H]1[C@H](C(=O)NC(=N)CCC)[C@@H]2C=C[C@@H]1C2   amide       14.4131        1.0632        2.7040      4.492311
+                                                                                                                  CCCCCCC(CCCCCC)NC(=O)[C@@H]1[C@H](C(=O)NC(CCCCCC)CCCCCC)[C@@H]2C=C[C@@H]1C2   amide       14.1326       -1.2404        3.2647      4.517325
+                                                                                                                        CCC#CC(C)(C)OC(=O)[C@@H]1[C@H](C(=O)OC(C)(C)C#CCC)[C@@H]2C=C[C@@H]1C2   ester       12.9608        1.4492        4.2846      4.553026
+                                                                                                      CCCCCCCC/C=C\CCCCCCCCNC(=O)[C@@H]1[C@H](C(=O)NCCCCCCCC/C=C\CCCCCCCC)[C@@H]2C=C[C@@H]1C2   amide       14.4780       -2.6992        0.9132      4.556836
+                                                                                                                CC(=N\O)/C(=N/O)NC(=O)[C@@H]1[C@H](C(=O)NC(=N\O)/C(C)=N/O)[C@@H]2C=C[C@@H]1C2   amide       14.1473        1.6076        3.1684      4.582777
+                                                                                                                      CC(C)(C)C(=N)NC(=O)[C@@H]1[C@H](C(=O)NC(=N)C(C)(C)C)[C@@H]2C=C[C@@H]1C2   amide       13.0771       -1.2352        4.3644      4.598100
+                                                                                                                    CC(C)(C)C(=NO)NC(=O)[C@@H]1[C@H](C(=O)NC(=NO)C(C)(C)C)[C@@H]2C=C[C@@H]1C2   amide       13.0771       -1.2352        4.3644      4.598100
+                                                                                                                CC(C)(C)/C(=N/O)NC(=O)[C@@H]1[C@H](C(=O)N/C(=N\O)C(C)(C)C)[C@@H]2C=C[C@@H]1C2   amide       13.0771       -1.2352        4.3644      4.598100
+                                                                                    CCCCCCCCCCCCCCCCCCCCCC(CC)(CC)OC(=O)[C@@H]1[C@H](C(=O)OC(CC)(CC)CCCCCCCCCCCCCCCCCCCCC)[C@@H]2C=C[C@@H]1C2   ester       13.5575       -4.2670        0.1106      4.600081
+                                                                                    CCCCCCCCCCCCCCCCCC(CCCC)(CCCC)OC(=O)[C@@H]1[C@H](C(=O)OC(CCCC)(CCCC)CCCCCCCCCCCCCCCCC)[C@@H]2C=C[C@@H]1C2   ester       13.5575       -4.2670        0.1106      4.600081
+INFO: Loaded 80936 monomers from results/legacy_sp/monomers_hsp_corrected.csv
+INFO: C0 HSP present                       80936 ->   80936  (-0) 
+INFO: Evaluating C1 catalogue filter on unique sidechains…
+INFO: C1 chiral/phenol/aniline             80936 ->   24610  (-56326) chiral=0 phenol=22507 aniline=37368 (overlapping)
+INFO: C2 unphysical delta < 0              24610 ->   22059  (-2551) of which Si monomers=83
+INFO: C3 physical envelope                 22059 ->   16905  (-5154) dD (12.0, 24.0), dP<=30.0, dH<=45.0
+INFO: Evaluating C4 relaxed coverage on unique monomers…
+INFO: C4 relaxed group coverage            16905 ->    9758  (-7147) strict n_unmatched==0 would have kept 9628
+INFO: C5 dedup (stereo + HSP triplet)       9758 ->    7491  (-2267) stereo-dedup intermediate=9628; isotope-labelled 161 -> 6 after preferring unlabelled twins
+INFO: Purchase links joined for 7491 / 7491 monomers
+INFO: Residual basic N present in 880 / 7491 monomers (11.7%)
+INFO: Envelope-excluded rows (5154) -> results/legacy_sp/excluded_outside_envelope.csv
+INFO: Full filtered set (7491 monomers) -> results/legacy_sp/monomers_filtered_ranked.csv
+INFO: ptfe           top25: Ra_PTFE 3.46–5.41  -> top25_ranked_ptfe_grid.png
+INFO: water          top25: Ra_Water 45.09–47.02  -> top25_ranked_water_grid.png
+INFO: diiodomethane  top25: Ra_Diiodomethane 33.51–45.58  -> top25_ranked_diiodomethane_grid.png
+WARNING: max_dispersion: top-25 spans 0.024 MPa^0.5 but the method's own AAE is 0.33 — 263 monomers lie within one AAE of the best. This ordering is inside the noise floor.
+INFO: max_dispersion top25: delta_D_corr 23.97–24.00  -> top25_ranked_max_dispersion_grid.png
+WARNING: max_polar: top-25 spans 0.682 MPa^0.5 but the method's own AAE is 0.82 — 30 monomers lie within one AAE of the best. This ordering is inside the noise floor.
+INFO: max_polar      top25: delta_P_corr 29.32–30.00  -> top25_ranked_max_polar_grid.png
+INFO: max_hbonding   top25: delta_H_corr 36.96–44.76  -> top25_ranked_max_hbonding_grid.png
+INFO: dominant_dispersion top25: margin_dispersion 19.23–22.13  -> top25_ranked_dominant_dispersion_grid.png
+INFO: dominant_polar top25: margin_polar 3.34–11.06  -> top25_ranked_dominant_polar_grid.png
+INFO: dominant_hbonding top25: margin_hbonding 8.17–20.65  -> top25_ranked_dominant_hbonding_grid.png
+INFO: water(no basic N) top25: Ra_Water 45.04–47.02  -> top25_ranked_water_no_basic_N_grid.png
+INFO: Filter report -> results/legacy_sp/filter_report.json
+== v3 (14:12:37) ==
+Lmod Warning:
+-------------------------------------------------------------------------------
+The following dependent module(s) are not currently loaded: scipy-stack/2024a
+(required by: rdkit/2024.03.5)
+-------------------------------------------------------------------------------
+
+
+
+
+The following have been reloaded with a version change:
+  1) ipykernel/2024a => ipykernel/2026a
+  2) scipy-stack/2024a => scipy-stack/2026a
+
+
+The following have been reloaded with a version change:
+  1) ipykernel/2026a => ipykernel/2024a
+  2) scipy-stack/2026a => scipy-stack/2024a
+
+skip bench
+== apply (14:12:40) ==
+dendron monomers: 12 {'bis_mpa': 3, 'frechet': 4, 'glycerol': 1, 'newkome': 1, 'pamam': 1, 'percec': 2}
+monomers: 80936  Si: 320  expected Ra err (tier-1 CV): 2.833
+D/P/H quantiles (non-Si):
+          D      P      H
+0.00  15.45   0.87   0.00
+0.01  16.75   3.16   3.43
+0.50  19.58   8.24   6.93
+0.99  21.43  13.55  13.24
+1.00  23.40  18.12  24.57
+monomers with pooled (rare) atoms: 186
+Si monomers D range: {'min': 14.13, '50%': 16.68, 'max': 20.04}
+                              id     D     P     H  Ra_PTFE  SPrefit_D  SPrefit_P  SPrefit_H
+          1 cholesteryl NB ester 17.10  1.85  2.17     9.25      17.75       1.08       0.77
+  2 bis(2-ethylhexyl) NB diester 16.63  3.38  3.99     9.44      16.47       2.79       2.94
+3 bis(2-hydroxyethyl) NB diester 17.96  7.44 13.86    18.93      18.02       8.32      18.22
+  4 bis(2-cyanoethyl) NB diester 17.83 10.81  6.79    16.38      18.15      16.47       6.09
+           5 tert-butyl NB ester 16.37  3.63  4.25     9.23      16.23       2.18       4.29
+       6 2-hydroxyethyl NB ester 17.85  6.24 11.53    16.68      17.60       6.55      11.86
+== down (14:16:20) ==
+method AAE 0.584,1.923,1.975
+== si (14:18:36) ==
+ALL DONE (14:18:39)
+== explorer (14:18:39) ==
+points 80936  json 15.1 MB  gz+b64 3.1 MB
+hosted page 3.2 MB;  standalone 5.1 MB
+ALL DONE (14:18:47)

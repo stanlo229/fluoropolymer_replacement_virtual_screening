@@ -6,9 +6,13 @@ scaffold via esterification (alcohols) or amidation (amines), producing a
 library of difunctional norbornene monomers (symmetric diesters/diamides)
 for HSP prediction.
 
+Dendrons (compound types dendron_alcohol / dendron_amine) attach through their
+focal atom, marked in the catalogue's focal_mapped_smiles (atom map 1 = focal
+OH oxygen, 2 = focal amine N); their peripheral OH / NH groups stay free.
+
 Output: monomers.csv with columns:
     sidechain_smiles, monomer_smiles, linkage, source, compound_type,
-    molecular_weight, has_si
+    molecular_weight, has_si, is_dendron, dendron_family, dendron_generation
 """
 
 import logging
@@ -56,7 +60,7 @@ def _largest_fragment(mol: Chem.Mol) -> Chem.Mol:
 
 
 def _attach_sidechain(scaffold_mol: Chem.Mol, reagent_mol: Chem.Mol,
-                      reactive_smarts: Chem.Mol) -> str | None:
+                      reactive_smarts: Chem.Mol, focal_map: int | None = None) -> str | None:
     """
     Form Norbornene-C(=O)-X-R by:
       1. Finding scaffold's carboxyl C and its OH oxygen.
@@ -75,7 +79,19 @@ def _attach_sidechain(scaffold_mol: Chem.Mol, reagent_mol: Chem.Mol,
 
     # Strip explicit Hs from reagent so atom indices are stable
     reagent_mol = Chem.RemoveHs(reagent_mol)
-    r_matches = reagent_mol.GetSubstructMatches(reactive_smarts)
+    if focal_map is not None:
+        # dendron: attach only through the mapped focal atom
+        r_matches = [(a.GetIdx(),) for a in reagent_mol.GetAtoms() if a.GetAtomMapNum() == focal_map]
+        reagent_mol = Chem.Mol(reagent_mol)
+        for a in reagent_mol.GetAtoms():
+            if a.GetAtomMapNum() == focal_map:
+                # the mapped atom was written as [NH2:2] / [OH:1]: let RDKit
+                # recompute its H count once the new bond is made
+                a.SetNumExplicitHs(0)
+                a.SetNoImplicit(False)
+            a.SetAtomMapNum(0)
+    else:
+        r_matches = reagent_mol.GetSubstructMatches(reactive_smarts)
     if not r_matches:
         return None
 
@@ -111,13 +127,13 @@ def _attach_sidechain(scaffold_mol: Chem.Mol, reagent_mol: Chem.Mol,
 
 
 def _attach_two_sidechains(scaffold_mol: Chem.Mol, reagent_mol: Chem.Mol,
-                           reactive_smarts: Chem.Mol) -> str | None:
+                           reactive_smarts: Chem.Mol, focal_map: int | None = None) -> str | None:
     """
     Attach the same reagent to both COOH groups of the diacid scaffold,
     producing a symmetric diester or diamide.
     Returns canonical SMILES or None if either attachment fails.
     """
-    mid_smi = _attach_sidechain(scaffold_mol, reagent_mol, reactive_smarts)
+    mid_smi = _attach_sidechain(scaffold_mol, reagent_mol, reactive_smarts, focal_map)
     if mid_smi is None:
         return None
     mid_mol = Chem.MolFromSmiles(mid_smi)
@@ -125,7 +141,7 @@ def _attach_two_sidechains(scaffold_mol: Chem.Mol, reagent_mol: Chem.Mol,
         return None
     if not mid_mol.HasSubstructMatch(COOH_SMARTS):
         return None
-    return _attach_sidechain(mid_mol, reagent_mol, reactive_smarts)
+    return _attach_sidechain(mid_mol, reagent_mol, reactive_smarts, focal_map)
 
 
 def _parse_compound_types(raw: str) -> list[str]:
@@ -187,8 +203,16 @@ def generate_monomers(
             continue
 
         types = _parse_compound_types(comp_type)
-        has_alcohol = "monoalcohol" in types or "diol" in types
-        has_amine   = "monoamine"   in types
+        dendron_oh = "dendron_alcohol" in types
+        dendron_nh = "dendron_amine" in types
+        has_alcohol = "monoalcohol" in types or "diol" in types or dendron_oh
+        has_amine   = "monoamine"   in types or dendron_nh
+        focal_smi = str(row.get("focal_mapped_smiles", "") or "").strip()
+        focal_mol = Chem.MolFromSmiles(focal_smi) if focal_smi and focal_smi != "nan" else None
+        if (dendron_oh or dendron_nh) and focal_mol is None:
+            skipped.append({"smiles": smiles, "compound_type": comp_type,
+                            "reason": "dendron without focal_mapped_smiles"})
+            continue
 
         if not has_alcohol and not has_amine:
             skipped.append({"smiles": smiles, "compound_type": comp_type,
@@ -200,11 +224,17 @@ def generate_monomers(
 
         si_flag = _has_si(mol)
 
+        # (linkage, smarts, reagent mol, focal map); a dendron's focal group
+        # replaces the ordinary rule for that linkage
         linkages_to_try = []
-        if has_alcohol and mol_has_oh:
-            linkages_to_try.append(("ester", ALCOHOL_SMARTS))
-        if has_amine and mol_has_nh:
-            linkages_to_try.append(("amide", AMINE_SMARTS))
+        if dendron_oh:
+            linkages_to_try.append(("ester", ALCOHOL_SMARTS, focal_mol, 1))
+        elif has_alcohol and mol_has_oh:
+            linkages_to_try.append(("ester", ALCOHOL_SMARTS, mol, None))
+        if dendron_nh:
+            linkages_to_try.append(("amide", AMINE_SMARTS, focal_mol, 2))
+        elif has_amine and mol_has_nh:
+            linkages_to_try.append(("amide", AMINE_SMARTS, mol, None))
 
         if not linkages_to_try:
             reasons = []
@@ -216,8 +246,9 @@ def generate_monomers(
                             "reason": "; ".join(reasons)})
             continue
 
-        for linkage, reactive_smarts in linkages_to_try:
-            monomer_smiles = _attach_two_sidechains(scaffold_mol, mol, reactive_smarts)
+        is_dendron = bool(dendron_oh or dendron_nh)
+        for linkage, reactive_smarts, reagent, focal_map in linkages_to_try:
+            monomer_smiles = _attach_two_sidechains(scaffold_mol, reagent, reactive_smarts, focal_map)
             if monomer_smiles is None:
                 skipped.append({"smiles": smiles, "compound_type": comp_type,
                                 "reason": f"attachment failed ({linkage})"})
@@ -231,6 +262,9 @@ def generate_monomers(
                 "compound_type":    comp_type,
                 "molecular_weight": mw,
                 "has_si":           si_flag,
+                "is_dendron":       is_dendron,
+                "dendron_family":   str(row.get("dendron_family", "") or "") if is_dendron else "",
+                "dendron_generation": int(row.get("dendron_generation", 0) or 0) if is_dendron else 0,
             })
 
     df_out = pd.DataFrame(rows)

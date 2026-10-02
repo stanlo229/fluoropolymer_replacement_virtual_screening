@@ -11,7 +11,7 @@ set of hard constraints:
 Constraints applied, in order:
 
   C1  Catalogue filter (same rules as dataset/filter_catalogues.py, applied to
-      the sidechain): drop chiral centres, phenols (OH on aromatic C) and
+      the sidechain): drop phenols (OH on aromatic C) and
       anilines (N on aromatic C).
 
   C2  Physical HSP: any negative delta_D/P/H is a group-contribution failure
@@ -211,6 +211,8 @@ def main() -> None:
     parser.add_argument("--catalogues", default="../dataset/catalogues.csv")
     parser.add_argument("--top_n", type=int, default=25)
     parser.add_argument("--ncols", type=int, default=5)
+    parser.add_argument("--exclude_chiral", action="store_true",
+                        help="Also drop side groups with chiral centres (the pre-2026-10 rule)")
     parser.add_argument("--title_note", default="",
                         help="Extra line on every grid title, e.g. a reliability warning")
     parser.add_argument("--method_aae", default=None,
@@ -268,10 +270,12 @@ def main() -> None:
     n_aniline = int(df["_aniline"].sum())
 
     before = df
-    df = df[df["_ok"] & ~df["_chiral"] & ~df["_phenol"] & ~df["_aniline"]].copy()
+    # chirality relaxed 2026-10-02 (user request); --exclude_chiral restores it
+    chiral_out = df["_chiral"] if args.exclude_chiral else False
+    df = df[df["_ok"] & ~chiral_out & ~df["_phenol"] & ~df["_aniline"]].copy()
     df = df.drop(columns=["_ok", "_chiral", "_phenol", "_aniline"])
-    _step("C1 chiral/phenol/aniline", before, df,
-          f"chiral={n_chiral} phenol={n_phenol} aniline={n_aniline} (overlapping)")
+    _step("C1 phenol/aniline" + ("/chiral" if args.exclude_chiral else ""), before, df,
+          f"chiral={n_chiral}{'' if args.exclude_chiral else ' (kept)'} phenol={n_phenol} aniline={n_aniline} (overlapping)")
 
     # ---- C2 drop unphysical (no clamping, Si included) -------------------
     # A negative Hansen component has no physical meaning. Si monomers are NOT

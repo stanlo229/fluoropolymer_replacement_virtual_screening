@@ -19,29 +19,31 @@ The following have been reloaded with a version change:
 == Hansen-space plots (v3) ==
 (PosixPath('results/v3/hsp_hansen_space.png'), PosixPath('results/v3/hsp_Ra_ranked.csv'))
 == Constrained top-25 rankings (v3) ==
-INFO: Loaded 79314 monomers from results/v3/monomers_hsp_corrected.csv
-INFO: C0 HSP present                       79314 ->   79007  (-307) 
+/project/6101772/stanlo/Repos/fluoropolymer_replacement_virtual_screening/hsp/rank_top_monomers.py:248: DtypeWarning: Columns (0: dendron_family) have mixed types. Specify dtype option on import or set low_memory=False.
+  df = pd.read_csv(args.input)
+INFO: Loaded 126330 monomers from results/v3/monomers_hsp_corrected.csv
+INFO: C0 HSP present                      126330 ->  125471  (-859) 
 INFO: Evaluating C1 catalogue filter on unique sidechains…
-INFO: C1 chiral/phenol/aniline             79007 ->   23987  (-55020) chiral=0 phenol=21638 aniline=36821 (overlapping)
-INFO: C2 unphysical delta < 0              23987 ->   23987  (-0) of which Si monomers=0
-INFO: C3 physical envelope                 23987 ->   23987  (-0) dD (12.0, 24.0), dP<=30.0, dH<=45.0
+INFO: C1 phenol/aniline                   125471 ->   60117  (-65354) chiral=44855 (kept) phenol=25756 aniline=43419 (overlapping)
+INFO: C2 unphysical delta < 0              60117 ->   60117  (-0) of which Si monomers=0
+INFO: C3 physical envelope                 60117 ->   60117  (-0) dD (12.0, 24.0), dP<=30.0, dH<=45.0
 INFO: Evaluating C4 relaxed coverage on unique monomers…
-INFO: C4 relaxed group coverage            23987 ->   23913  (-74) strict n_unmatched==0 would have kept 23894
-INFO: C5 dedup (stereo + HSP triplet)      23913 ->   17376  (-6537) stereo-dedup intermediate=23612; isotope-labelled 208 -> 12 after preferring unlabelled twins
-INFO: Purchase links joined for 17376 / 17376 monomers
-INFO: Residual basic N present in 1595 / 17376 monomers (9.2%)
-INFO: Full filtered set (17376 monomers) -> results/v3/monomers_filtered_ranked.csv
-INFO: ptfe           top25: Ra_PTFE 6.46–8.39  -> top25_ranked_ptfe_grid.png
-INFO: water          top25: Ra_Water 42.05–43.90  -> top25_ranked_water_grid.png
-INFO: diiodomethane  top25: Ra_Diiodomethane 15.94–26.18  -> top25_ranked_diiodomethane_grid.png
-INFO: max_dispersion top25: delta_D_corr 21.10–23.27  -> top25_ranked_max_dispersion_grid.png
-INFO: max_polar      top25: delta_P_corr 14.82–18.12  -> top25_ranked_max_polar_grid.png
-INFO: max_hbonding   top25: delta_H_corr 17.97–24.57  -> top25_ranked_max_hbonding_grid.png
-WARNING: dominant_dispersion: top-25 spans 1.883 MPa^0.5 but the method's own AAE is 2.82 — 96 monomers lie within one AAE of the best. This ordering is inside the noise floor.
-INFO: dominant_dispersion top25: margin_dispersion 12.87–14.76  -> top25_ranked_dominant_dispersion_grid.png
-WARNING: dominant_polar: top-25 spans 2.812 MPa^0.5 but the method's own AAE is 2.82 — 25 monomers lie within one AAE of the best. This ordering is inside the noise floor.
-INFO: dominant_polar top25: margin_polar -12.24–-9.43  -> top25_ranked_dominant_polar_grid.png
-WARNING: dominant_hbonding: top-25 spans 2.607 MPa^0.5 but the method's own AAE is 2.82 — 28 monomers lie within one AAE of the best. This ordering is inside the noise floor.
-INFO: dominant_hbonding top25: margin_hbonding -10.87–-8.26  -> top25_ranked_dominant_hbonding_grid.png
-INFO: water(no basic N) top25: Ra_Water 42.05–43.90  -> top25_ranked_water_no_basic_N_grid.png
+INFO: C4 relaxed group coverage            60117 ->   59903  (-214) strict n_unmatched==0 would have kept 59740
+INFO: C5 dedup (stereo + HSP triplet)      59903 ->   38875  (-21028) stereo-dedup intermediate=52769; isotope-labelled 646 -> 42 after preferring unlabelled twins
+INFO: Purchase links joined for 38875 / 38875 monomers
+INFO: Residual basic N present in 4528 / 38875 monomers (11.6%)
+INFO: Full filtered set (38875 monomers) -> results/v3/monomers_filtered_ranked.csv
+INFO: ptfe           top25: Ra_PTFE 6.46–8.10  -> top25_ranked_ptfe_grid.png
+INFO: water          top25: Ra_Water 43.07–43.90  -> top25_ranked_water_grid.png
+INFO: diiodomethane  top25: Ra_Diiodomethane 17.38–26.18  -> top25_ranked_diiodomethane_grid.png
+INFO: max_dispersion top25: delta_D_corr 21.19–23.27  -> top25_ranked_max_dispersion_grid.png
+INFO: max_polar      top25: delta_P_corr 15.05–18.12  -> top25_ranked_max_polar_grid.png
+INFO: max_hbonding   top25: delta_H_corr 18.70–24.57  -> top25_ranked_max_hbonding_grid.png
+WARNING: dominant_dispersion: top-25 spans 1.302 MPa^0.5 but the method's own AAE is 2.82 — 224 monomers lie within one AAE of the best. This ordering is inside the noise floor.
+INFO: dominant_dispersion top25: margin_dispersion 13.65–14.95  -> top25_ranked_dominant_dispersion_grid.png
+WARNING: dominant_polar: top-25 spans 2.119 MPa^0.5 but the method's own AAE is 2.82 — 62 monomers lie within one AAE of the best. This ordering is inside the noise floor.
+INFO: dominant_polar top25: margin_polar -11.50–-9.38  -> top25_ranked_dominant_polar_grid.png
+WARNING: dominant_hbonding: top-25 spans 1.949 MPa^0.5 but the method's own AAE is 2.82 — 57 monomers lie within one AAE of the best. This ordering is inside the noise floor.
+INFO: dominant_hbonding top25: margin_hbonding -10.21–-8.26  -> top25_ranked_dominant_hbonding_grid.png
+INFO: water(no basic N) top25: Ra_Water 43.03–43.90  -> top25_ranked_water_no_basic_N_grid.png
 INFO: Filter report -> results/v3/filter_report.json

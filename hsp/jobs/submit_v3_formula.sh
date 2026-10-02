@@ -34,7 +34,13 @@ print(f'{b.MAE_D},{b.MAE_P},{b.MAE_H}')" 2>/dev/null | tail -1)
            # Si monomers ranked on their own (values may not be reliable)
            VER=v3/si METHOD_AAE=$AAE \
              TITLE_NOTE="Si MONOMERS ONLY: HSP may not be reliable (see results/v3/si/README.md)" \
-             jobs/run_downstream.sh 2>&1 | f > results/v3/si/downstream_log.txt ;;
+             jobs/run_downstream.sh 2>&1 | f > results/v3/si/downstream_log.txt
+           # dendron monomers ranked on their own as well
+           if [ -s results/v3/dendrons/monomers_hsp_corrected.csv ] && \
+              [ "$(wc -l < results/v3/dendrons/monomers_hsp_corrected.csv)" -gt 1 ]; then
+             VER=v3/dendrons METHOD_AAE=$AAE TITLE_NOTE="DENDRON MONOMERS (focal-point attached)" \
+               jobs/run_downstream.sh 2>&1 | f > results/v3/dendrons/downstream_log.txt
+           fi ;;
     si)    python -u analysis/si_reliability.py 2>&1 | f > results/benchmark/reference/si_reliability_log.txt ;;
   esac
 done

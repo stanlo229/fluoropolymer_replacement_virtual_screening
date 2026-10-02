@@ -1,0 +1,43 @@
+Lmod Warning:
+-------------------------------------------------------------------------------
+The following dependent module(s) are not currently loaded: scipy-stack/2024a
+(required by: rdkit/2024.03.5)
+-------------------------------------------------------------------------------
+
+
+
+
+The following have been reloaded with a version change:
+  1) ipykernel/2024a => ipykernel/2026a
+  2) scipy-stack/2024a => scipy-stack/2026a
+
+
+The following have been reloaded with a version change:
+  1) ipykernel/2026a => ipykernel/2024a
+  2) scipy-stack/2026a => scipy-stack/2024a
+
+== Hansen-space plots (v3/dendrons) ==
+(PosixPath('results/v3/dendrons/hsp_hansen_space.png'), PosixPath('results/v3/dendrons/hsp_Ra_ranked.csv'))
+== Constrained top-25 rankings (v3/dendrons) ==
+INFO: Loaded 15 monomers from results/v3/dendrons/monomers_hsp_corrected.csv
+INFO: C0 HSP present                          15 ->      15  (-0) 
+INFO: Evaluating C1 catalogue filter on unique sidechains…
+INFO: C1 phenol/aniline                       15 ->      11  (-4) chiral=3 (kept) phenol=0 aniline=4 (overlapping)
+INFO: C2 unphysical delta < 0                 11 ->      11  (-0) of which Si monomers=0
+INFO: C3 physical envelope                    11 ->      11  (-0) dD (12.0, 24.0), dP<=30.0, dH<=45.0
+INFO: Evaluating C4 relaxed coverage on unique monomers…
+INFO: C4 relaxed group coverage               11 ->      11  (-0) strict n_unmatched==0 would have kept 11
+INFO: C5 dedup (stereo + HSP triplet)         11 ->      11  (-0) stereo-dedup intermediate=11; isotope-labelled 0 -> 0 after preferring unlabelled twins
+INFO: Purchase links joined for 11 / 11 monomers
+INFO: Residual basic N present in 2 / 11 monomers (18.2%)
+INFO: Full filtered set (11 monomers) -> results/v3/dendrons/monomers_filtered_ranked.csv
+INFO: ptfe           top25: Ra_PTFE 9.32–16.82  -> top25_ranked_ptfe_grid.png
+INFO: water          top25: Ra_Water 37.31–41.57  -> top25_ranked_water_grid.png
+INFO: diiodomethane  top25: Ra_Diiodomethane 1.45–5.00  -> top25_ranked_diiodomethane_grid.png
+INFO: max_dispersion top25: delta_D_corr 16.52–19.86  -> top25_ranked_max_dispersion_grid.png
+INFO: max_polar      top25: delta_P_corr 2.60–6.71  -> top25_ranked_max_polar_grid.png
+INFO: max_hbonding   top25: delta_H_corr 3.05–6.88  -> top25_ranked_max_hbonding_grid.png
+INFO: dominant_dispersion top25: margin_dispersion 4.95–11.28  -> top25_ranked_dominant_dispersion_grid.png
+INFO: dominant_polar top25: margin_polar -20.40–-15.20  -> top25_ranked_dominant_polar_grid.png
+INFO: dominant_hbonding top25: margin_hbonding -20.87–-16.11  -> top25_ranked_dominant_hbonding_grid.png
+INFO: Filter report -> results/v3/dendrons/filter_report.json

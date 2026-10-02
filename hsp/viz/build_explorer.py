@@ -56,7 +56,9 @@ def r1(x):
 def build_data() -> dict:
     df = pd.read_csv(V3 / "monomers_hsp_formula.csv", low_memory=False,
                      usecols=["monomer_smiles", "sidechain_smiles", "linkage", "source", "compound_type",
-                              "molecular_weight", "D", "P", "H", "has_si", "n_pooled_atoms"])
+                              "molecular_weight", "D", "P", "H", "has_si", "n_pooled_atoms"]
+                     + [c for c in ("is_dendron", "dendron_family", "dendron_generation")
+                        if c in pd.read_csv(V3 / "monomers_hsp_formula.csv", nrows=0).columns])
     df = df.drop_duplicates("monomer_smiles").reset_index(drop=True)
     idx = {s: i for i, s in enumerate(df.monomer_smiles)}
 
@@ -70,14 +72,19 @@ def build_data() -> dict:
                 links[idx[s]] = "" if pd.isna(l) else str(l).split("?utm_")[0]
 
     lists = []
-    for sub, tag in (("", ""), ("si", "Si: ")):
+    if "is_dendron" in df.columns:
+        dmask = df.is_dendron.fillna(False).astype(bool)
+        if dmask.any():
+            lists.append({"key": "dendrons:all", "label": "All dendron monomers", "si": False,
+                          "idx": [int(i) for i in np.flatnonzero(dmask.to_numpy())]})
+    for sub, tag in (("", ""), ("si", "Si: "), ("dendrons", "Dendrons: ")):
         for stem, label in RANKINGS:
             p = V3 / sub / f"top25_ranked_{stem}.csv"
             if not p.exists():
                 continue
             members = [idx[s] for s in pd.read_csv(p).monomer_smiles if s in idx]
             lists.append({"key": f"{sub or 'main'}:{stem}", "label": tag + label,
-                          "si": bool(sub), "idx": members})
+                          "si": sub == "si", "dend": sub == "dendrons", "idx": members})
 
     vendors = sorted(df.source.dropna().unique().tolist())
     types = sorted(df.compound_type.dropna().unique().tolist())
@@ -96,6 +103,9 @@ def build_data() -> dict:
         "vend": [vendors.index(v) if v in vendors else -1 for v in df.source],
         "type": [types.index(v) if v in types else -1 for v in df.compound_type],
         "pool": (df.n_pooled_atoms.fillna(0) > 0).astype(int).tolist(),
+        "dend": ([f"{f} G{int(g)}" if bool(d) else "" for d, f, g in
+                  zip(df.is_dendron.fillna(False), df.dendron_family.fillna(""), df.dendron_generation.fillna(0))]
+                 if "is_dendron" in df.columns else [""] * len(df)),
         "surv": surv.tolist(), "link": links,
         "vendors": vendors, "types": types, "lists": lists,
         "six": [{"id": r.id, "smi": r.monomer_smiles, "D": round(r.D, 2), "P": round(r.P, 2), "H": round(r.H, 2)}
